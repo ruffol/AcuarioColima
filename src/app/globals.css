@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 🌙 Tlalchichi Design System — Warm Artisanal Palette */
+:root {
+  /* Light theme — warm parchment */
+  --bg-page: #faf7f2;
+  --bg-card: #ffffff;
+  --bg-arena: #f5f0eb;
+  --bg-arena-light: #f0ebe4;
+  --bg-hero: #f5f0eb;
+
+  --text-primary: #2c2823;
+  --text-secondary: #6b6560;
+  --text-muted: #9e9790;
+
+  --accent: #c86a4e;
+  --accent-dark: #b0553a;
+  --accent-light: #e0896e;
+
+  --border-subtle: rgba(44, 40, 35, 0.08);
+  --border-arena: #e5ddd5;
+  --border-card: rgba(44, 40, 35, 0.06);
+
+  --shadow-card: 0 1px 3px rgba(44, 40, 35, 0.04), 0 4px 12px rgba(44, 40, 35, 0.03);
+
+  --footer-bg: #2c2823;
+  --footer-text: #a09892;
+  --footer-border: rgba(255, 255, 255, 0.08);
+
+  --badge-bg: #f5f0eb;
+  --badge-text: #6b6560;
+}
+
+.dark {
+  /* Dark theme — warm charcoal, no pure blacks */
+  --bg-page: #181614;
+  --bg-card: #22201c;
+  --bg-arena: #22201c;
+  --bg-arena-light: #2a2723;
+  --bg-hero: #1a1816;
+
+  --text-primary: #e8e2da;
+  --text-secondary: #a09892;
+  --text-muted: #706a64;
+
+  --accent: #d4775a;
+  --accent-dark: #c86a4e;
+  --accent-light: #e89b7a;
+
+  --border-subtle: rgba(232, 226, 218, 0.08);
+  --border-arena: #2a2723;
+  --border-card: rgba(232, 226, 218, 0.06);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  --footer-bg: #0f0e0c;
+  --footer-text: #706a64;
+  --footer-border: rgba(255, 255, 255, 0.06);
+
+  --badge-bg: #2a2723;
+  --badge-text: #a09892;
+}
+
+@theme inline {
+  --color-background: var(--bg-page);
+  --color-foreground: var(--text-primary);
+  --color-arena: var(--bg-arena);
+  --color-arena-light: var(--bg-arena-light);
+  --color-terracota: var(--accent);
+  --color-terracota-dark: var(--accent-dark);
+  --color-terracota-light: var(--accent-light);
+  --color-negro-suave: var(--text-primary);
+  --color-blanco: var(--bg-card);
+  --color-muted: var(--text-secondary);
+  --color-card: var(--bg-card);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Subtle border utility */
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+
+/* Card default styling */
+.card-default {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}

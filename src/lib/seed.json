@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "producto-ejemplo",
+    "nombre_es": "Producto Ejemplo",
+    "nombre_en": "Example Product",
+    "descripcion_es": "Descripción de ejemplo. Reemplaza con tu contenido.",
+    "descripcion_en": "Example description. Replace with your content.",
+    "historia_es": "Historia de ejemplo.",
+    "historia_en": "Example story.",
+    "categoria_es": "Categoría",
+    "categoria_en": "Category",
+    "precio_mxn": 100,
+    "precio_usd": 5,
+    "stock": 50,
+    "destacado": true,
+    "activo": false,
+    "imagenes": ["/placeholder.jpg"],
+    "colores": [
+      {"nombre_es": "Color 1", "nombre_en": "Color 1", "hex": "#CCCCCC", "imagen": ""},
+      {"nombre_es": "Color 2", "nombre_en": "Color 2", "hex": "#999999", "imagen": ""},
+      {"nombre_es": "Color 3", "nombre_en": "Color 3", "hex": "#666666", "imagen": ""},
+      {"nombre_es": "Color 4", "nombre_en": "Color 4", "hex": "#333333", "imagen": ""}
+    ]
+  }
+]

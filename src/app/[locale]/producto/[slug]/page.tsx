@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: Props) {
       title: nombre,
       description: seoDesc || '',
       url: currentUrl,
-      siteName: 'Tlalchichi Store',
+      siteName: 'AcuarioColima',
       locale: locale === 'es' ? 'es_MX' : 'en_US',
       type: 'website',
       images: imagen ? [{ url: imagen, width: 800, height: 800 }] : [],
@@ -218,6 +218,9 @@ export default async function ProductoDetailPage({ params }: Props) {
                 <p className="text-xs text-muted">SKU: {(data as any).sku || '-'}</p>
                 {(data as any).brand && (
                   <p className="text-xs text-muted">Marca: {(data as any).brand}</p>
+                )}
+                {(data as any).weight_kg > 0 && (
+                  <p className="text-xs text-muted">Peso: {((data as any).weight_kg * 1000).toFixed(0)} g ({(data as any).weight_kg.toFixed(2)} kg)</p>
                 )}
                 <p className="text-xs text-muted">
                   Stock: {data.stock > 0 ? data.stock : 'Agotado'}

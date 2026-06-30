@@ -17,12 +17,12 @@
     "sin_articulos": "No articles yet"
   },
   "HomePage": {
-    "titulo": "Tlalchichi Store",
-    "subtitulo": "Handmade Tlalchichi figurines — crafted with love and tradition",
+    "titulo": "AcuarioColima",
+    "subtitulo": "Tropical fish, plants, aquariums and accessories. Everything you need for your aquarium.",
     "cta": "View products",
     "destacados": "Featured Products",
-    "historia_titulo": "Our Story",
-    "historia_texto": "Tlalchichis are pre-Hispanic ceramic figures from Colima, Mexico. Each piece tells a story of generations of artisans preserving this millenary tradition."
+    "historia_titulo": "About AcuarioColima",
+    "historia_texto": "We are your specialized aquarium store in Colima. We offer healthy tropical fish, quality aquatic plants, modern aquariums and all the accessories you need to create and maintain the aquarium of your dreams. With shipping throughout Mexico and free personalized advice."
   },
   "ProductGrid": {
     "titulo": "Our Products",
@@ -163,11 +163,11 @@
     "mensaje": "Hi, I'm interested in this product:\n{{nombre}}\n{{url}}\nCould you give me more information?"
   },
   "Email": {
-    "confirmacion_asunto": "Thank you for your purchase! - Tlalchichi Store",
+    "confirmacion_asunto": "Thank you for your purchase! - AcuarioColima",
     "confirmacion_saludo": "Hello {{nombre}}",
     "confirmacion_texto": "Thank you for your purchase. Here are your order details:",
     "confirmacion_total": "Total paid: {{total}}",
     "confirmacion_envio": "Ship to: {{direccion}}",
-    "confirmacion_gracias": "Thank you for supporting Mexican art!"
+    "confirmacion_gracias": "Thank you for trusting AcuarioColima!"
   }
 }

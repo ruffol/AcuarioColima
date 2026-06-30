@@ -37,6 +37,7 @@ export default function ClientWrapper({ model, locale, source = 'model' }: Props
       precio_mxn: model.precio_mxn,
       precio_usd: model.precio_usd,
       stock: model.stock,
+      weight_kg: model.weight_kg || 0,
     }
 
     return (
@@ -79,6 +80,7 @@ export default function ClientWrapper({ model, locale, source = 'model' }: Props
     precio_mxn: model.precio_mxn,
     precio_usd: model.precio_usd,
     stock: model.stock,
+    weight_kg: model.peso_kg || 0,
   }
 
   return (

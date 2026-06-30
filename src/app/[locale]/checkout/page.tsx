@@ -262,6 +262,11 @@ export default function CheckoutPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{nombre}</p>
                       <p className="text-xs text-muted">{tipo}{color ? ` · ${color}` : ''} × {item.quantity}</p>
+                      {v.weight_kg > 0 && (
+                        <p className="text-xs text-muted">
+                          {(v.weight_kg * 1000).toFixed(0)} g / {v.weight_kg.toFixed(2)} kg
+                        </p>
+                      )}
                       <p className="text-sm text-foreground font-medium mt-0.5">
                         {moneda === 'MXN' ? `$${precio * item.quantity} MXN` : `$${(precio * item.quantity).toFixed(2)} USD`}
                       </p>
@@ -271,7 +276,16 @@ export default function CheckoutPage() {
               })}
             </div>
 
+            {(() => {
+              const totalWeightKg = validItems.reduce((sum, item) => sum + (item.variant.weight_kg || 0) * item.quantity, 0)
+              return (
             <div className="space-y-2 pt-2 border-t border-border">
+              {totalWeightKg > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted">Peso total</span>
+                  <span className="text-foreground">{(totalWeightKg * 1000).toFixed(0)} g ({totalWeightKg.toFixed(2)} kg)</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted">{ct('subtotal')}</span>
                 <span className="text-foreground">{moneda === 'MXN' ? `$${subtotal} MXN` : `$${subtotal.toFixed(2)} USD`}</span>
@@ -285,6 +299,7 @@ export default function CheckoutPage() {
                 <span className="text-primary">{moneda === 'MXN' ? `$${total} MXN` : `$${total.toFixed(2)} USD`}</span>
               </div>
             </div>
+            )})()}
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ export default function MobileMenu({ isOpen, onClose }: Props) {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white text-xs font-bold">P</div>
-            <span className="text-sm font-bold text-foreground font-[family-name:var(--font-heading)]">Premium Nature</span>
+            <span className="text-sm font-bold text-foreground font-[family-name:var(--font-heading)]">AcuarioColima</span>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg text-muted hover:text-foreground hover:bg-surface transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

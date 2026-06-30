@@ -51,6 +51,9 @@ export default function ProductCard({ model, locale }: Props) {
         <p className="text-sm text-terracota font-medium">
           ${model.precio_mxn} MXN
         </p>
+        {model.weight_kg > 0 && (
+          <p className="text-[11px] text-negro-suave/50">{(model.weight_kg * 1000).toFixed(0)} g</p>
+        )}
       </div>
     </Link>
   )

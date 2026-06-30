@@ -21,7 +21,7 @@ export default function Footer() {
                 P
               </div>
               <span className="text-lg font-bold text-white font-[family-name:var(--font-heading)]">
-                Premium Nature
+                AcuarioColima
               </span>
             </div>
             <p className="text-sm text-blue-200/60 leading-relaxed">
@@ -83,7 +83,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-[#1e2d3d] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-blue-200/40">
-          <p>&copy; {new Date().getFullYear()} Premium Nature. {t('derechos')}</p>
+          <p>&copy; {new Date().getFullYear()} AcuarioColima. {t('derechos')}</p>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:text-secondary transition-colors">Términos</a>
             <a href="#" className="hover:text-secondary transition-colors">Privacidad</a>

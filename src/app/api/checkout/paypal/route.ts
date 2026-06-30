@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         currency_code: moneda,
         value: total.toFixed(2),
       },
-      description: 'Compra en Tlalchichi Store',
+      description: 'Compra en AcuarioColima',
       shipping: {
         name: { full_name: nombre || 'Cliente' },
         address: {

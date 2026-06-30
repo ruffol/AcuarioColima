@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tlalchichi.xyz'
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.acuariocolima.com'
 
 export const metadata: Metadata = {
-  title: 'Tlalchichi Store',
-  description: 'Figuras de Tlalchichis — Hecho en Colima con amor y tradición',
+  title: 'AcuarioColima — Acuarios, peces y accesorios en Colima',
+  description: 'Todo para tu acuario en Colima: peces tropicales, accesorios, plantas acuáticas y más. Envíos a todo México.',
   metadataBase: new URL(baseUrl),
   icons: {
     icon: '/img/favilogotlalchichi.png',

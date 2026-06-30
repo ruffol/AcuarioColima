@@ -112,6 +112,11 @@ export default function CartDrawer() {
                           <p className="text-sm font-medium text-foreground mt-1">
                             {moneda === 'MXN' ? `$${precio} MXN` : `$${precio.toFixed(2)} USD`}
                           </p>
+                          {v.weight_kg > 0 && (
+                            <p className="text-xs text-muted mt-0.5">
+                              {(v.weight_kg * 1000).toFixed(0)} g / {v.weight_kg.toFixed(2)} kg {item.quantity > 1 ? `(total ${(v.weight_kg * item.quantity * 1000).toFixed(0)} g)` : ''}
+                            </p>
+                          )}
                           <div className="flex items-center gap-2 mt-2">
                             <button
                               onClick={() => updateQuantity(v, item.quantity - 1)}
@@ -154,20 +159,31 @@ export default function CartDrawer() {
                     </select>
                   </div>
 
-                  <div className="space-y-1.5 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted">{t('subtotal')}</span>
-                      <span className="text-foreground">{moneda === 'MXN' ? `$${subtotal} MXN` : `$${subtotal.toFixed(2)} USD`}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted">{t('envio')}</span>
-                      <span className="text-foreground">{shipping === 0 ? 'Gratis' : moneda === 'MXN' ? `$${shipping} MXN` : `$${shipping.toFixed(2)} USD`}</span>
-                    </div>
-                    <div className="flex justify-between font-semibold text-base pt-2 border-t border-border">
-                      <span className="text-foreground">{t('total')}</span>
-                      <span className="text-foreground">{moneda === 'MXN' ? `$${total} MXN` : `$${total.toFixed(2)} USD`}</span>
-                    </div>
-                  </div>
+                  {(() => {
+                    const totalWeightKg = validItems.reduce((sum, item) => sum + (item.variant.weight_kg || 0) * item.quantity, 0)
+                    return (
+                      <div className="space-y-1.5 text-sm">
+                        {totalWeightKg > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-muted">Peso total</span>
+                            <span className="text-foreground">{(totalWeightKg * 1000).toFixed(0)} g ({totalWeightKg.toFixed(2)} kg)</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between">
+                          <span className="text-muted">{t('subtotal')}</span>
+                          <span className="text-foreground">{moneda === 'MXN' ? `$${subtotal} MXN` : `$${subtotal.toFixed(2)} USD`}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted">{t('envio')}</span>
+                          <span className="text-foreground">{shipping === 0 ? 'Gratis' : moneda === 'MXN' ? `$${shipping} MXN` : `$${shipping.toFixed(2)} USD`}</span>
+                        </div>
+                        <div className="flex justify-between font-semibold text-base pt-2 border-t border-border">
+                          <span className="text-foreground">{t('total')}</span>
+                          <span className="text-foreground">{moneda === 'MXN' ? `$${total} MXN` : `$${total.toFixed(2)} USD`}</span>
+                        </div>
+                      </div>
+                    )
+                  })()}
 
                   <Link
                     href="/checkout"

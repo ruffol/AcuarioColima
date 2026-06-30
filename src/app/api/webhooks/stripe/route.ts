@@ -64,9 +64,9 @@ export async function POST(req: Request) {
         if (process.env.RESEND_API_KEY) {
           const resend = getResend()
           await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'Tlalchichi <onboarding@resend.dev>',
+            from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
             to: session.customer_details?.email || metadata.email,
-            subject: 'Gracias por tu compra! - Tlalchichi Store',
+            subject: 'Gracias por tu compra! - AcuarioColima',
             html: `
               <h1>Gracias por tu compra!</h1>
               <p>Hola ${metadata.nombre || 'Cliente'},</p>

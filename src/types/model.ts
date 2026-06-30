@@ -85,4 +85,5 @@ export interface CartItemVariant {
   precio_mxn: number
   precio_usd: number
   stock: number
+  weight_kg: number
 }

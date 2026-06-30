@@ -120,9 +120,9 @@ export async function POST(req: Request) {
         if (process.env.RESEND_API_KEY && email) {
           const resend = getResend()
           await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'Tlalchichi <onboarding@resend.dev>',
+            from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
             to: [email],
-            subject: 'Gracias por tu compra - Tlalchichi Store',
+            subject: 'Gracias por tu compra - AcuarioColima',
             html: '<p>Hola ' + nombre + ',</p><p>Gracias por tu compra. Recibiras tu pedido pronto.</p><p>Total: $' + (amount * (moneda === 'MXN' ? 1 : 1)).toFixed(2) + ' ' + moneda + '</p>',
           })
           console.log('[paypal-webhook] Email sent')

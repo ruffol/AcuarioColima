@@ -130,9 +130,9 @@ export async function POST(req: Request) {
       try {
         const resend = getResend()
         await resend.emails.send({
-          from: process.env.EMAIL_FROM || 'Tlalchichi <onboarding@resend.dev>',
+          from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
           to: emailDestino,
-          subject: 'Gracias por tu compra! - Tlalchichi Store',
+          subject: 'Gracias por tu compra! - AcuarioColima',
           html: `
             <h1>Gracias por tu compra!</h1>
             <p>Hola ${nombre || 'Cliente'},</p>

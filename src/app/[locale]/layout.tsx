@@ -55,7 +55,7 @@ export async function generateMetadata({
       title: t('titulo'),
       description: t('subtitulo'),
       url: currentUrl,
-      siteName: 'Tlalchichi Store',
+      siteName: 'AcuarioColima',
       locale: locale === 'es' ? 'es_MX' : 'en_US',
       type: 'website',
       images: [
@@ -63,7 +63,7 @@ export async function generateMetadata({
           url: `${baseUrl}/img/iconologotlalchichi.svg`,
           width: 800,
           height: 800,
-          alt: 'Tlalchichi Store',
+          alt: 'AcuarioColima',
         },
       ],
     },
@@ -90,7 +90,7 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages()
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tlalchichi.xyz'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.acuariocolima.com'
 
   return (
     <html lang={locale} className={`${inter.variable} ${headingFont.variable}`} suppressHydrationWarning>
@@ -113,9 +113,9 @@ export default async function LocaleLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              name: 'Tlalchichi Store',
+              name: 'AcuarioColima',
               url: baseUrl,
-              description: 'Figuras de Tlalchichis — Hecho en Colima con amor y tradición',
+              description: 'Todo para tu acuario en Colima — peces, accesorios y plantas acuáticas',
               inLanguage: locale === 'es' ? 'es-MX' : 'en-US',
             }),
           }}
@@ -126,10 +126,10 @@ export default async function LocaleLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              name: 'Tlalchichi Store',
+              name: 'AcuarioColima',
               url: baseUrl,
               logo: `${baseUrl}/img/iconologotlalchichi.svg`,
-              description: 'Tienda de figuras artesanales de Tlalchichis de Colima, México',
+              description: 'Tienda especializada en acuarios, peces tropicales y accesorios en Colima, México',
               address: { '@type': 'PostalAddress', addressCountry: 'MX' },
             }),
           }}

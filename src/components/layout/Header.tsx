@@ -45,7 +45,7 @@ export default function Header() {
               </svg>
             </div>
             <span className="text-lg font-bold font-[family-name:var(--font-heading)] text-white tracking-tight hidden sm:block">
-              Premium Nature
+              AcuarioColima
             </span>
           </Link>
 

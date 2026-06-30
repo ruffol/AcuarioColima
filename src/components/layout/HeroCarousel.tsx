@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link } from '@/i18n/routing'
 
+const placeholder = 'https://placehold.co/800x600/0F4C81/38BDF8?text=AcuarioColima'
+
 const images = [
   '/img/carrucel/tlalchichi-parado-colima.png',
   '/img/carrucel/tlalchichi-sentado-colima.png',
@@ -20,19 +22,12 @@ const images = [
 ]
 
 const alts = [
-  'Tlalchichi parado artesanal de Colima',
-  'Tlalchichi sentado artesanal de Colima',
-  'Tlalchichi viejo sentado artesanal de Colima',
-  'Tlalchichi acostado artesanal de Colima',
-  'Tlalchichi con mazorca artesanal de Colima',
-  'Tlalchichi con máscara artesanal de Colima',
-  'Tlalchichi joven-viejo artesanal de Colima',
-  'Tlalchichi acostado mediano artesanal de Colima',
-  'Tlalchichi con máscara de danza artesanal de Colima',
-  'Tlalchichi con mazorca de abundancia artesanal de Colima',
-  'Tlalchichi parado guardián artesanal de Colima',
-  'Tlalchichi sentado miniatura artesanal de Colima',
-  'Tlalchichi viejo sentado color artesanal de Colima',
+  'AcuarioColima — peces tropicales',
+  'AcuarioColima — accesorios para acuarios',
+  'AcuarioColima — plantas acuáticas',
+  'AcuarioColima — acuarios y peceras',
+  'AcuarioColima — filtros y bombas',
+  'AcuarioColima — alimentos para peces',
 ]
 
 export default function HeroCarousel() {
@@ -89,10 +84,10 @@ export default function HeroCarousel() {
         <div className="absolute bottom-12 sm:bottom-20 left-0 right-0 z-10 text-center px-4">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-foreground mb-4 tracking-tight leading-[1.1] drop-shadow-sm">
-              Tlalchichi Store
+              AcuarioColima
             </h1>
             <p className="text-base sm:text-lg text-muted mb-8 max-w-xl mx-auto">
-              Figuras de Tlalchichis — Hecho en Colima con amor y tradición
+              Todo para tu acuario — Peces, accesorios y plantas acuáticas
             </p>
             <div className="flex gap-4 justify-center">
               <Link

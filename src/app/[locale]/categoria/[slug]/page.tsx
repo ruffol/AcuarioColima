@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: Props) {
   const nombre = locale === 'es' ? type.nombre_es : type.nombre_en
   const currentUrl = `${baseUrl}/${locale}/categoria/${slug}`
   const title = locale === 'es'
-    ? `Tlalchichis ${nombre} — Figuras artesanales de Colima`
-    : `Tlalchichi ${nombre} — Handmade figurines from Colima`
+    ? `AcuarioColima — ${nombre}`
+    : `AcuarioColima — ${nombre}`
   const desc = locale === 'es'
-    ? `Descubre nuestra colección de Tlalchichis ${nombre}. Figuras artesanales hechas a mano en Colima, México.`
-    : `Discover our collection of Tlalchichi ${nombre}. Handmade artisan figurines from Colima, Mexico.`
+    ? `Todo para tu acuario en Colima — ${nombre}. Peces, accesorios y más.`
+    : `Everything for your aquarium in Colima — ${nombre}. Fish, accessories and more.`
 
   const alternateLanguages: Record<string, string> = {}
   for (const l of locales) {
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props) {
       title,
       description: desc,
       url: currentUrl,
-      siteName: 'Tlalchichi Store',
+      siteName: 'AcuarioColima',
       locale: locale === 'es' ? 'es_MX' : 'en_US',
       type: 'website',
       images: [{ url: `${baseUrl}/img/iconologotlalchichi.svg`, width: 800, height: 800 }],

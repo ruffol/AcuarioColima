@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props) {
       title: t('titulo'),
       description: t('subtitulo'),
       url: currentUrl,
-      siteName: 'Premium Nature',
+      siteName: 'AcuarioColima',
       locale: locale === 'es' ? 'es_MX' : 'en_US',
       type: 'website',
     },

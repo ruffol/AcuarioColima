@@ -1,4 +1,3 @@
-'use client'
 
 interface FishSpecsData {
   scientific_name: string

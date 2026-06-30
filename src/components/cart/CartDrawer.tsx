@@ -1,36 +1,31 @@
 'use client'
 
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { useCartStore, getSubtotal, getItemCount, getTotal, getShippingCost } from '@/store/cart'
 import { Link } from '@/i18n/routing'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 import { SHIPPING_RATES, type ShippingDestination } from '@/types'
 
-const FREE_SHIPPING_THRESHOLD = 999
-
 export default function CartDrawer() {
   const t = useTranslations('Cart')
-  const locale = useLocale()
   const { items, isOpen, closeCart, pais, setPais, removeItem, updateQuantity } = useCartStore()
 
   const validItems = items.filter((item) => {
     const v = item?.variant
-    return v && typeof v.precio_mxn === 'number' && typeof v.precio_usd === 'number'
+    return v && typeof v.precio_mxn === 'number'
   })
 
   const count = getItemCount(validItems)
-  const subtotal = getSubtotal(validItems, pais === 'MX' ? 'MXN' : 'USD')
-  const shipping = getShippingCost(pais, pais === 'MX' ? 'MXN' : 'USD')
-  const total = subtotal + shipping
-  const moneda = pais === 'MX' ? 'MXN' : 'USD'
-  const freeShippingProgress = Math.min(subtotal / FREE_SHIPPING_THRESHOLD, 1)
+  const subtotal = getSubtotal(validItems)
+  const shipping = getShippingCost(pais)
+  const total = getTotal(validItems, pais)
 
   useBodyScrollLock(isOpen)
 
   const shippingOptions = (Object.entries(SHIPPING_RATES) as [ShippingDestination, typeof SHIPPING_RATES[ShippingDestination]][]).map(
     ([key, val]) => ({
       value: key,
-      label: `${val.label_es} — ${moneda === 'MXN' && val.MXN > 0 ? `$${val.MXN} MXN` : val.USD > 0 ? `$${val.USD} USD` : 'Gratis'}`,
+      label: `${val.label} — $${val.MXN} MXN`,
     })
   )
 
@@ -67,29 +62,13 @@ export default function CartDrawer() {
               </div>
             ) : (
               <>
-                {/* Free shipping progress bar */}
-                <div className="px-4 pt-3 pb-1">
-                  <div className="bg-surface rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-success h-full rounded-full transition-all duration-300"
-                      style={{ width: `${freeShippingProgress * 100}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-muted mt-1.5">
-                    {subtotal < FREE_SHIPPING_THRESHOLD
-                      ? `${locale === 'es' ? `Faltan $${FREE_SHIPPING_THRESHOLD - subtotal} MXN para envío gratis` : `$${FREE_SHIPPING_THRESHOLD - subtotal} MXN away from free shipping`}`
-                      : locale === 'es' ? '🎉 Envío gratis' : '🎉 Free shipping'}
-                  </p>
-                </div>
-
                 {/* Items */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
                   {validItems.map((item) => {
                     const v = item.variant
-                    const precio = moneda === 'MXN' ? v.precio_mxn : v.precio_usd
-                    const nombre = locale === 'es' ? v.nombre_es : v.nombre_en
-                    const tipo = locale === 'es' ? v.typeNombreEs : v.typeNombreEn
-                    const color = locale === 'es' ? v.colorNombreEs : v.colorNombreEn
+                    const nombre = v.nombre_es
+                    const tipo = v.typeNombreEs
+                    const color = v.colorNombreEs
 
                     return (
                       <div key={`${v.modelId}-${v.typeId}-${v.colorId}`} className="flex gap-3 p-3 rounded-xl bg-surface group">
@@ -110,7 +89,7 @@ export default function CartDrawer() {
                             )}
                           </div>
                           <p className="text-sm font-medium text-foreground mt-1">
-                            {moneda === 'MXN' ? `$${precio} MXN` : `$${precio.toFixed(2)} USD`}
+                            ${v.precio_mxn} MXN
                           </p>
                           {v.weight_kg > 0 && (
                             <p className="text-xs text-muted mt-0.5">
@@ -146,7 +125,7 @@ export default function CartDrawer() {
                 <div className="border-t border-border p-4 space-y-4 bg-surface">
                   <div>
                     <label className="block text-xs font-medium text-muted mb-1.5">
-                      {t('seleccionar_pais')}
+                      Tipo de envío
                     </label>
                     <select
                       value={pais}
@@ -171,15 +150,15 @@ export default function CartDrawer() {
                         )}
                         <div className="flex justify-between">
                           <span className="text-muted">{t('subtotal')}</span>
-                          <span className="text-foreground">{moneda === 'MXN' ? `$${subtotal} MXN` : `$${subtotal.toFixed(2)} USD`}</span>
+                          <span className="text-foreground">${subtotal} MXN</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted">{t('envio')}</span>
-                          <span className="text-foreground">{shipping === 0 ? 'Gratis' : moneda === 'MXN' ? `$${shipping} MXN` : `$${shipping.toFixed(2)} USD`}</span>
+                          <span className="text-foreground">${shipping} MXN</span>
                         </div>
                         <div className="flex justify-between font-semibold text-base pt-2 border-t border-border">
                           <span className="text-foreground">{t('total')}</span>
-                          <span className="text-foreground">{moneda === 'MXN' ? `$${total} MXN` : `$${total.toFixed(2)} USD`}</span>
+                          <span className="text-foreground">${total} MXN</span>
                         </div>
                       </div>
                     )

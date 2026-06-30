@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/routing'
 import { WHATSAPP_NUMBER } from '@/lib/constants'
 import ThemeToggle from './ThemeToggle'
-import LanguageToggle from './LanguageToggle'
+
 
 export default function Footer() {
   const t = useTranslations('Footer')
@@ -29,7 +29,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2 mt-4">
               <ThemeToggle />
-              <LanguageToggle />
+
             </div>
           </div>
 

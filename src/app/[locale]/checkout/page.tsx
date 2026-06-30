@@ -1,7 +1,7 @@
 'use client'
 
-import { useTranslations, useLocale } from 'next-intl'
-import { useCartStore, getSubtotal, getTotal } from '@/store/cart'
+import { useTranslations } from 'next-intl'
+import { useCartStore, getSubtotal, getShippingCost, getTotal } from '@/store/cart'
 import { SHIPPING_RATES, type ShippingDestination } from '@/types'
 import { WHATSAPP_NUMBER } from '@/lib/constants'
 import { useState } from 'react'
@@ -12,18 +12,16 @@ import Select from '@/components/ui/Select'
 export default function CheckoutPage() {
   const t = useTranslations('Checkout')
   const ct = useTranslations('Cart')
-  const locale = useLocale()
   const { items, pais, setPais } = useCartStore()
 
   const validItems = items.filter((item) => {
     const v = item?.variant
-    return v && typeof v.precio_mxn === 'number' && typeof v.precio_usd === 'number'
+    return v && typeof v.precio_mxn === 'number'
   })
 
-  const moneda = pais === 'MX' ? 'MXN' : 'USD'
-  const subtotal = getSubtotal(validItems, moneda)
-  const total = getTotal(validItems, pais, moneda)
-  const shippingCost = total - subtotal
+  const subtotal = getSubtotal(validItems)
+  const shippingCost = getShippingCost(pais)
+  const total = getTotal(validItems, pais)
   const [loading, setLoading] = useState<'stripe' | 'paypal' | null>(null)
   const [error, setError] = useState('')
   const [form, setForm] = useState({ email: '', nombre: '', direccion: '', ciudad: '', estado: '', cp: '' })
@@ -46,7 +44,7 @@ export default function CheckoutPage() {
   }
 
   const shippingOptions = (Object.entries(SHIPPING_RATES) as [ShippingDestination, typeof SHIPPING_RATES[ShippingDestination]][]).map(
-    ([key, val]) => ({ value: key, label: val.label_es })
+    ([key, val]) => ({ value: key, label: `${val.label} — $${val.MXN} MXN` })
   )
 
   function validateForm(): string | null {
@@ -64,7 +62,7 @@ export default function CheckoutPage() {
     productTypeId: Number(item.variant.typeId),
     colorId: Number(item.variant.colorId),
     nombre: item.variant.nombre_es,
-    precio: moneda === 'MXN' ? item.variant.precio_mxn : item.variant.precio_usd,
+    precio: item.variant.precio_mxn,
     quantity: item.quantity,
     imagen: item.variant.image,
   }))
@@ -79,7 +77,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: checkoutItems, pais, moneda, email: form.email, nombre: form.nombre,
+          items: checkoutItems, pais, moneda: 'MXN', email: form.email, nombre: form.nombre,
           direccion: `${form.direccion}, ${form.ciudad}, ${form.estado}, ${form.cp}`,
           shipping: shippingCost,
         }),
@@ -105,7 +103,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: checkoutItems, pais, moneda, email: form.email, nombre: form.nombre,
+          items: checkoutItems, pais, moneda: 'MXN', email: form.email, nombre: form.nombre,
           direccion: `${form.direccion}, ${form.ciudad}, ${form.estado}, ${form.cp}`,
           shipping: shippingCost,
           direccion_linea: form.direccion, ciudad: form.ciudad, estado: form.estado, cp: form.cp,
@@ -219,7 +217,7 @@ export default function CheckoutPage() {
           {/* Contact support */}
           <div className="text-center pt-2">
             <p className="text-xs text-muted mb-3">
-              {locale === 'es' ? '¿Tienes dudas antes de pagar?' : 'Questions before paying?'}
+              '¿Tienes dudas antes de pagar?'
             </p>
             <div className="flex items-center justify-center gap-4">
               <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer"
@@ -250,10 +248,9 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               {validItems.map((item) => {
                 const v = item.variant
-                const nombre = locale === 'es' ? v.nombre_es : v.nombre_en
-                const tipo = locale === 'es' ? v.typeNombreEs : v.typeNombreEn
-                const color = locale === 'es' ? v.colorNombreEs : v.colorNombreEn
-                const precio = moneda === 'MXN' ? v.precio_mxn : v.precio_usd
+                const nombre = v.nombre_es
+                const tipo = v.typeNombreEs
+                const color = v.colorNombreEs
                 return (
                   <div key={`${v.modelId}-${v.typeId}-${v.colorId}`} className="flex gap-3 pb-3 border-b border-border last:border-0 last:pb-0">
                     <div className="w-14 h-14 rounded-xl bg-surface overflow-hidden shrink-0 border border-border">
@@ -268,7 +265,7 @@ export default function CheckoutPage() {
                         </p>
                       )}
                       <p className="text-sm text-foreground font-medium mt-0.5">
-                        {moneda === 'MXN' ? `$${precio * item.quantity} MXN` : `$${(precio * item.quantity).toFixed(2)} USD`}
+                        ${v.precio_mxn * item.quantity} MXN
                       </p>
                     </div>
                   </div>
@@ -288,15 +285,15 @@ export default function CheckoutPage() {
               )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted">{ct('subtotal')}</span>
-                <span className="text-foreground">{moneda === 'MXN' ? `$${subtotal} MXN` : `$${subtotal.toFixed(2)} USD`}</span>
+                <span className="text-foreground">${subtotal} MXN</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted">{ct('envio')}</span>
-                <span className="text-foreground">{shippingCost === 0 ? 'Gratis' : moneda === 'MXN' ? `$${shippingCost} MXN` : `$${shippingCost.toFixed(2)} USD`}</span>
+                <span className="text-foreground">${shippingCost} MXN</span>
               </div>
               <div className="flex justify-between text-base font-semibold pt-2 border-t border-border">
                 <span className="text-foreground">{ct('total')}</span>
-                <span className="text-primary">{moneda === 'MXN' ? `$${total} MXN` : `$${total.toFixed(2)} USD`}</span>
+                <span className="text-primary">${total} MXN</span>
               </div>
             </div>
             )})()}

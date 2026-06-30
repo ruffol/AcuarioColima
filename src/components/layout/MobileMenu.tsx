@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/routing'
-import LanguageToggle from './LanguageToggle'
+
 import ThemeToggle from './ThemeToggle'
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock'
 
@@ -54,7 +54,7 @@ export default function MobileMenu({ isOpen, onClose }: Props) {
 
         <div className="mt-8 pt-6 border-t border-border flex items-center gap-3">
           <ThemeToggle />
-          <LanguageToggle />
+
         </div>
       </div>
     </div>

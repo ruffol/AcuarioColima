@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link, usePathname, useRouter } from '@/i18n/routing'
 import { useCartStore, getItemCount } from '@/store/cart'
 import { useState, useRef, useEffect } from 'react'
-import LanguageToggle from './LanguageToggle'
+
 import ThemeToggle from './ThemeToggle'
 import MobileMenu from './MobileMenu'
 
@@ -99,7 +99,7 @@ export default function Header() {
             </button>
 
             <ThemeToggle />
-            <LanguageToggle />
+
 
             {/* Favorites */}
             <Link href="/favoritos" className="hidden sm:flex p-2 text-blue-200/60 hover:text-white transition-colors rounded-lg hover:bg-white/5" aria-label="Favoritos">

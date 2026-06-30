@@ -28,7 +28,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
-      pais: 'MX' as ShippingDestination,
+      pais: 'LOCAL' as ShippingDestination,
       isOpen: false,
 
       addItem: (variant, quantity = 1) =>
@@ -79,7 +79,7 @@ export const useCartStore = create<CartState>()(
       closeCart: () => set({ isOpen: false }),
     }),
     {
-      name: 'tlalchichi-cart',
+      name: 'acuariocolima-cart',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         items: state.items,
@@ -89,27 +89,19 @@ export const useCartStore = create<CartState>()(
   )
 )
 
-export function getSubtotal(items: CartItem[], moneda: 'MXN' | 'USD'): number {
-  const key = moneda === 'MXN' ? 'precio_mxn' : 'precio_usd'
+export function getSubtotal(items: CartItem[]): number {
   return items.reduce((total, item) => {
-    const precio = item.variant?.[key as keyof typeof item.variant]
+    const precio = item.variant?.precio_mxn
     return total + (typeof precio === 'number' ? precio * item.quantity : 0)
   }, 0)
 }
 
-export function getShippingCost(
-  pais: ShippingDestination,
-  moneda: 'MXN' | 'USD'
-): number {
-  return SHIPPING_RATES[pais]?.[moneda] ?? 0
+export function getShippingCost(pais: ShippingDestination): number {
+  return SHIPPING_RATES[pais]?.MXN ?? 0
 }
 
-export function getTotal(
-  items: CartItem[],
-  pais: ShippingDestination,
-  moneda: 'MXN' | 'USD'
-): number {
-  return getSubtotal(items, moneda) + getShippingCost(pais, moneda)
+export function getTotal(items: CartItem[], pais: ShippingDestination): number {
+  return getSubtotal(items) + getShippingCost(pais)
 }
 
 export function getItemCount(items: CartItem[]): number {

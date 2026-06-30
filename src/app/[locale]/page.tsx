@@ -1,8 +1,6 @@
 import { getTranslations } from 'next-intl/server'
-import { getProductTypes } from '@/lib/db'
 import { getCategories } from '@/lib/repositories/categories'
 import { getProducts } from '@/lib/repositories/products'
-import { CATEGORY_IMAGES } from '@/lib/constants'
 import Hero from '@/components/layout/Hero'
 import CategoryCard from '@/components/product/CategoryCard'
 import ProductCard from '@/components/product/ProductCard'
@@ -14,7 +12,6 @@ interface Props {
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage' })
-  const types = getProductTypes()
   const categories = getCategories()
   const featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
 
@@ -43,14 +40,6 @@ export default async function HomePage({ params }: Props) {
                 nombre={locale === 'es' ? cat.nombre_es : cat.nombre_en}
                 imagenes={[]}
                 icon={cat.icon}
-              />
-            ))}
-            {types.map((type: any) => (
-              <CategoryCard
-                key={type.slug}
-                slug={type.slug}
-                nombre={locale === 'es' ? type.nombre_es : type.nombre_en}
-                imagenes={CATEGORY_IMAGES[type.slug] || []}
               />
             ))}
           </div>

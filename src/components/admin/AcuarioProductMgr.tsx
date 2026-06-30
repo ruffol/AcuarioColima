@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
+import ImageUploader from '@/components/admin/ImageUploader'
 import { useAdminToast } from '@/lib/admin-helpers'
 
 interface ProductForm {
@@ -218,14 +219,7 @@ export default function AcuarioProductMgr() {
               <Input label="Tamaño (cm)" value={form.size_cm} onChange={(e) => setForm({ ...form, size_cm: e.target.value })} />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">URLs de imágenes (una por línea)</label>
-              <textarea
-                className="w-full px-3 py-2 rounded-xl border border-arena bg-card text-foreground text-sm resize-y h-20"
-                value={form.images.join('\n')}
-                onChange={(e) => setForm({ ...form, images: e.target.value.split('\n').filter(Boolean) })}
-              />
-            </div>
+            <ImageUploader images={form.images} onChange={(images) => setForm({ ...form, images })} />
 
             <div className="flex items-center gap-6">
               <label className="flex items-center gap-2 text-sm">

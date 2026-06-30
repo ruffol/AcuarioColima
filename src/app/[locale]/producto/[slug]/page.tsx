@@ -269,7 +269,7 @@ export default async function ProductoDetailPage({ params }: Props) {
                   <a key={p.id} href={`/${locale}/producto/${p.slug}`} className="bg-card border border-arena rounded-xl overflow-hidden hover:border-terracota/30 transition-colors group">
                     <div className="aspect-square bg-arena overflow-hidden">
                       {imgs[0] ? (
-                        // eslint-disable-next-line @next/next/no-img-element
+
                         <img src={imgs[0]} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-muted text-xs">Sin img</div>

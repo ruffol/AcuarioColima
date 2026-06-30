@@ -64,7 +64,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Verification failed' }, { status: 401 })
     }
 
-    console.log('[paypal-webhook] Event:', body.event_type)
 
     if (body.event_type === 'CHECKOUT.ORDER.APPROVED') {
       const resource = body.resource
@@ -113,7 +112,6 @@ export async function POST(req: Request) {
         paypal_order_id: orderId,
       })
 
-      console.log('[paypal-webhook] Order created:', order.id)
 
       // Send email
       try {
@@ -125,7 +123,8 @@ export async function POST(req: Request) {
             subject: 'Gracias por tu compra - AcuarioColima',
             html: '<p>Hola ' + nombre + ',</p><p>Gracias por tu compra. Recibiras tu pedido pronto.</p><p>Total: $' + (amount * (moneda === 'MXN' ? 1 : 1)).toFixed(2) + ' ' + moneda + '</p>',
           })
-          console.log('[paypal-webhook] Email sent')
+
+
         }
       } catch (emailErr) {
         console.error('[paypal-webhook] Email error:', emailErr)

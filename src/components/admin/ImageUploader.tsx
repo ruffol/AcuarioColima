@@ -51,7 +51,7 @@ export default function ImageUploader({ images, onChange }: ImageUploaderProps) 
           {images.map((url, i) => (
             <div key={i} className="relative group aspect-square rounded-lg overflow-hidden border border-arena bg-arena/30">
               {url.startsWith('http') || url.startsWith('/') ? (
-                // eslint-disable-next-line @next/next/no-img-element
+
                 <img
                   src={url}
                   alt={`Imagen ${i + 1}`}

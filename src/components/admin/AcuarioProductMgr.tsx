@@ -311,7 +311,7 @@ export default function AcuarioProductMgr() {
               <div key={p.id} className="bg-card border border-arena rounded-xl overflow-hidden hover:border-terracota/30 transition-colors group cursor-pointer" onClick={() => handleEdit(p)}>
                 <div className="aspect-square bg-arena overflow-hidden">
                   {imgs[0] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
+
                     <img src={imgs[0]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted text-xs">Sin img</div>

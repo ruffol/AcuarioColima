@@ -390,7 +390,6 @@ function seedColors() {
 
   const insert = db.prepare('INSERT INTO colors (slug, nombre_es, nombre_en, hex_code) VALUES (@slug, @nombre_es, @nombre_en, @hex_code)')
   for (const c of colors) insert.run(c)
-  console.log('[seed] Colors seeded:', colors.length)
 }
 
 function seedProductTypes() {
@@ -406,7 +405,6 @@ function seedProductTypes() {
 
   const insert = db.prepare('INSERT INTO product_types (slug, nombre_es, nombre_en, precio_mxn, precio_usd) VALUES (@slug, @nombre_es, @nombre_en, @precio_mxn, @precio_usd)')
   for (const t of types) insert.run(t)
-  console.log('[seed] Product types seeded:', types.length)
 }
 
 function seedModels() {
@@ -429,7 +427,6 @@ function seedModels() {
     })
     count++
   }
-  console.log('[seed] Models seeded:', count)
 }
 
 // ── New catalog seeds ──
@@ -568,7 +565,6 @@ function seedCategories() {
   if (existing.count > 0) return
   const insert = db.prepare('INSERT INTO categories (slug, nombre_es, nombre_en, icon, parent_id) VALUES (@slug, @nombre_es, @nombre_en, @icon, @parent_id)')
   for (const c of CATEGORIES) insert.run(c)
-  console.log('[seed] Categories seeded:', CATEGORIES.length)
 }
 
 function seedNewProducts() {
@@ -620,7 +616,6 @@ function seedNewProducts() {
     })
     count++
   }
-  console.log('[seed] New products seeded:', count)
 }
 
 function seedCompatibility() {
@@ -646,7 +641,6 @@ function seedCompatibility() {
       count += 2
     }
   }
-  console.log('[seed] Compatibility seeded:', count)
 }
 
 // ── Model queries ──

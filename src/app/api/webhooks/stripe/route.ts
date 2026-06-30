@@ -76,7 +76,8 @@ export async function POST(req: Request) {
               <p>Gracias por apoyar el arte mexicano!</p>
             `,
           })
-          console.log('[stripe-webhook] Email sent to', metadata.email)
+
+
         }
       } catch (emailErr) {
         console.error('[stripe-webhook] Email error:', emailErr)

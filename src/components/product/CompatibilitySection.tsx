@@ -31,7 +31,7 @@ export default function CompatibilitySection({ products, locale }: Props) {
             >
               <div className="aspect-square bg-arena rounded-lg overflow-hidden mb-2">
                 {img ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+
                   <img src={img} alt={name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted text-xs">🐟</div>

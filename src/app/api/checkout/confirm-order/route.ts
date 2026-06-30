@@ -142,7 +142,8 @@ export async function POST(req: Request) {
             <p>Gracias por apoyar el arte mexicano!</p>
           `,
         })
-        console.log('[confirm-order] Email sent to', email)
+
+
       } catch (emailErr) {
         console.error('[confirm-order] Email error:', emailErr)
       }

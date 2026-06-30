@@ -11,7 +11,7 @@ const stats = [
   { value: '+1200', label: 'Clientes satisfechos' },
   { value: '250+', label: 'Especies' },
   { value: '450+', label: 'Accesorios' },
-  { value: '🇲🇽', label: 'Envíos a todo México' },
+  { value: 'Envíos', label: 'a todo México' },
 ]
 
 const trendingSearches = ['Betta', 'Guppy', 'Filtro', 'Pecera', 'Planta']

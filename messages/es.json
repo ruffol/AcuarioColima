@@ -2,7 +2,6 @@
   "Navbar": {
     "inicio": "Inicio",
     "productos": "Productos",
-    "nosotros": "Nosotros",
     "carrito": "Carrito",
     "admin": "Admin",
     "buscar": "Buscar...",
@@ -86,7 +85,6 @@
   "Footer": {
     "inicio": "Inicio",
     "productos": "Productos",
-    "nosotros": "Nosotros",
     "derechos": "Todos los derechos reservados",
     "contacto": "Contacto",
     "envios": "Envíos a todo el mundo",

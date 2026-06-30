@@ -66,9 +66,6 @@ export default function Header() {
             <Link href="/blog" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/blog' || pathname.startsWith('/blog/') ? 'text-white bg-white/10' : 'text-blue-200/60 hover:text-white hover:bg-white/5'}`}>
               {t('blog')}
             </Link>
-            <Link href="/nosotros" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/nosotros' ? 'text-white bg-white/10' : 'text-blue-200/60 hover:text-white hover:bg-white/5'}`}>
-              {t('nosotros')}
-            </Link>
           </nav>
 
           {/* Right section */}

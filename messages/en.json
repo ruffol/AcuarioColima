@@ -2,7 +2,6 @@
   "Navbar": {
     "inicio": "Home",
     "productos": "Products",
-    "nosotros": "About Us",
     "carrito": "Cart",
     "admin": "Admin",
     "buscar": "Search...",
@@ -86,7 +85,6 @@
   "Footer": {
     "inicio": "Home",
     "productos": "Products",
-    "nosotros": "About Us",
     "derechos": "All rights reserved",
     "contacto": "Contact",
     "envios": "Worldwide shipping",

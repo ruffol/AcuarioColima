@@ -44,7 +44,6 @@ export default function Footer() {
               <Link href="/productos?tipo=pez" className="text-sm text-blue-200/60 hover:text-secondary transition-colors">Peces</Link>
               <Link href="/productos?tipo=accesorio" className="text-sm text-blue-200/60 hover:text-secondary transition-colors">Accesorios</Link>
               <Link href="/blog" className="text-sm text-blue-200/60 hover:text-secondary transition-colors">Blog</Link>
-              <Link href="/nosotros" className="text-sm text-blue-200/60 hover:text-secondary transition-colors">{t('nosotros')}</Link>
             </nav>
           </div>
 

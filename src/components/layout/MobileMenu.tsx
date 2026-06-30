@@ -50,9 +50,6 @@ export default function MobileMenu({ isOpen, onClose }: Props) {
           <Link href="/blog" className="px-3 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-surface transition-colors" onClick={onClose}>
             Blog
           </Link>
-          <Link href="/nosotros" className="px-3 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-surface transition-colors" onClick={onClose}>
-            {t('nosotros')}
-          </Link>
         </nav>
 
         <div className="mt-8 pt-6 border-t border-border flex items-center gap-3">

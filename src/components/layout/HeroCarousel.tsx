@@ -102,10 +102,10 @@ export default function HeroCarousel() {
                 Ver productos
               </Link>
               <Link
-                href="/nosotros"
+                href="/blog"
                 className="inline-flex items-center px-6 py-3 bg-card border border-arena text-foreground font-medium rounded-xl hover:bg-arena transition-colors"
               >
-                Nuestra Historia
+                Visita nuestro blog
               </Link>
             </div>
           </div>

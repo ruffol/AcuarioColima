@@ -19,10 +19,11 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const token = sessionStorage.getItem('admin_token')
-    if (token) {
-      queueMicrotask(() => setAuthed(true))
-    }
+    fetch('/api/admin/verify')
+      .then((res) => {
+        if (res.ok) setAuthed(true)
+      })
+      .catch(() => {})
   }, [])
 
   const handleLogin = async () => {
@@ -37,7 +38,6 @@ export default function AdminLayout({
       const data = await res.json()
       if (res.ok && data.token) {
         setAuthed(true)
-        sessionStorage.setItem('admin_token', data.token)
       } else {
         setError(true)
       }
@@ -47,8 +47,8 @@ export default function AdminLayout({
     setLoading(false)
   }
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('admin_token')
+  const handleLogout = async () => {
+    await fetch('/api/admin/verify', { method: 'DELETE' })
     setAuthed(false)
   }
 
@@ -76,7 +76,7 @@ export default function AdminLayout({
   }
 
   const isActive = (href: string) =>
-    pathname === href ? 'bg-arena text-negro-suave' : 'text-muted hover:text-negro-suave'
+    pathname === href || pathname.startsWith(href + '/') ? 'bg-arena text-negro-suave' : 'text-muted hover:text-negro-suave'
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -89,6 +89,9 @@ export default function AdminLayout({
             </Link>
             <Link href="/admin/ordenes" className={`px-3 py-1.5 rounded-lg transition-colors ${isActive('/admin/ordenes')}`}>
               {t('ordenes')}
+            </Link>
+            <Link href="/admin/acuario" className={`px-3 py-1.5 rounded-lg transition-colors ${isActive('/admin/acuario')}`}>
+              Acuario
             </Link>
           </nav>
         </div>

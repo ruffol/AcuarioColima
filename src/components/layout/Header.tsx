@@ -1,9 +1,9 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/routing'
+import { Link, usePathname, useRouter } from '@/i18n/routing'
 import { useCartStore, getItemCount } from '@/store/cart'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import LanguageToggle from './LanguageToggle'
 import ThemeToggle from './ThemeToggle'
 import MobileMenu from './MobileMenu'
@@ -11,82 +11,153 @@ import MobileMenu from './MobileMenu'
 export default function Header() {
   const t = useTranslations('Navbar')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const items = useCartStore((s) => s.items)
   const openCart = useCartStore((s) => s.openCart)
   const count = getItemCount(items)
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (searchOpen && searchRef.current) searchRef.current.focus()
+  }, [searchOpen])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/productos?busqueda=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchOpen(false)
+      setSearchQuery('')
+    }
+  }
 
   return (
-    <header className="sticky top-0 z-40 bg-blanco/95 backdrop-blur-sm border-b border-arena">
+    <header className="sticky top-0 z-40 bg-blur-bg backdrop-blur-xl border-b border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-xl font-semibold tracking-tight text-negro-suave hover:text-terracota transition-colors"
-          >
-            <img src="/img/weblogotlalchichi.png" alt="Tlalchichi" className="h-8 w-auto" />
-            Tlalchichi
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white text-sm font-bold">
+              P
+            </div>
+            <span className="text-lg font-bold font-[family-name:var(--font-heading)] text-primary tracking-tight hidden sm:block">
+              Premium Nature
+            </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/"
-              className="text-sm font-medium text-negro-suave/70 hover:text-terracota transition-colors"
-            >
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Link href="/" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/' ? 'text-primary bg-primary-light' : 'text-muted hover:text-foreground hover:bg-surface'}`}>
               {t('inicio')}
             </Link>
-            <Link
-              href="/productos"
-              className="text-sm font-medium text-negro-suave/70 hover:text-terracota transition-colors"
-            >
+            <Link href="/productos" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/productos' || pathname.startsWith('/producto/') ? 'text-primary bg-primary-light' : 'text-muted hover:text-foreground hover:bg-surface'}`}>
               {t('productos')}
             </Link>
-            <Link
-              href="/nosotros"
-              className="text-sm font-medium text-negro-suave/70 hover:text-terracota transition-colors"
-            >
+            <Link href="/productos?tipo=pez" className="px-3 py-2 rounded-lg text-sm font-medium text-muted hover:text-foreground hover:bg-surface transition-colors">
+              Peces
+            </Link>
+            <Link href="/productos?tipo=accesorio" className="px-3 py-2 rounded-lg text-sm font-medium text-muted hover:text-foreground hover:bg-surface transition-colors">
+              Accesorios
+            </Link>
+            <Link href="/blog" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/blog' || pathname.startsWith('/blog/') ? 'text-primary bg-primary-light' : 'text-muted hover:text-foreground hover:bg-surface'}`}>
+              {t('blog')}
+            </Link>
+            <Link href="/nosotros" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/nosotros' ? 'text-primary bg-primary-light' : 'text-muted hover:text-foreground hover:bg-surface'}`}>
               {t('nosotros')}
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2">
+          {/* Right section */}
+          <div className="flex items-center gap-1">
+            {/* Desktop search */}
+            <div className="hidden lg:block relative">
+              <form onSubmit={handleSearch}>
+                <input
+                  ref={searchRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('buscar') || 'Buscar...'}
+                  className="w-48 xl:w-64 px-3 py-2 pl-9 rounded-lg bg-surface border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </form>
+            </div>
+
+            {/* Mobile search toggle */}
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="lg:hidden p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface"
+              aria-label="Buscar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </button>
+
+            <ThemeToggle />
+            <LanguageToggle />
+
+            {/* Favorites */}
+            <Link href="/favoritos" className="hidden sm:flex p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface" aria-label="Favoritos">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </Link>
+
+            {/* Cart */}
+            <button
+              onClick={openCart}
+              className="relative p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface"
+              aria-label={t('carrito')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+              {count > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center ring-2 ring-background">
+                  {count > 9 ? '9+' : count}
+                </span>
+              )}
+            </button>
+
+            {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 text-negro-suave/70 hover:text-terracota transition-colors"
+              className="md:hidden p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface"
               aria-label="Menú"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <ThemeToggle />
-            <LanguageToggle />
-            <button
-              onClick={openCart}
-              className="relative p-2 text-negro-suave/70 hover:text-terracota transition-colors"
-              aria-label={t('carrito')}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                />
-              </svg>
-              {count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-terracota text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                  {count > 9 ? '9+' : count}
-                </span>
-              )}
-            </button>
           </div>
         </div>
+
+        {/* Mobile search bar (below header) */}
+        {searchOpen && (
+          <div className="lg:hidden pb-3 animate-fade-in">
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <input
+                  ref={searchRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('buscar') || 'Buscar productos...'}
+                  className="w-full px-4 py-2.5 pl-10 rounded-xl bg-surface border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
       <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
     </header>

@@ -1,15 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getPaypalBaseUrl, getPaypalClientId, getPaypalClientSecret } from '@/lib/paypal'
-
-const B64 = Buffer.from;
-function basicAuth(cred: string): string {
-  const prefix = String.fromCharCode(66) + String.fromCharCode(97) + String.fromCharCode(115) + String.fromCharCode(105) + String.fromCharCode(99) + String.fromCharCode(32);
-  return prefix + cred;
-}
-function bearerAuth(token: string): string {
-  const prefix = String.fromCharCode(66, 101, 97, 114, 101, 114, 32);
-  return prefix + token;
-}
+import { getPaypalBaseUrl, getPayPalAccessToken } from '@/lib/paypal'
 
 export async function POST(req: Request) {
   try {
@@ -21,23 +11,7 @@ export async function POST(req: Request) {
     }
 
     const baseUrl = getPaypalBaseUrl()
-    const clientId = getPaypalClientId()
-    const clientSecret = getPaypalClientSecret()
-    const auth = B64(clientId + ':' + clientSecret).toString('base64')
-
-    const tokenRes = await fetch(baseUrl + '/v1/oauth2/token', {
-      method: 'POST',
-      headers: { 'Authorization': basicAuth(auth), 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'grant_type=client_credentials',
-    })
-
-    if (!tokenRes.ok) {
-      const errText = await tokenRes.text()
-      console.error('[paypal] Token error:', errText)
-      return NextResponse.json({ error: 'Error de autenticacion con PayPal' }, { status: 500 })
-    }
-
-    const { access_token } = await tokenRes.json()
+    const access_token = await getPayPalAccessToken()
 
     const itemTotal = items.reduce((sum: number, item: any) => sum + (item.precio || 0) * (item.quantity || 0), 0)
     const shippingCost = shipping || 0
@@ -63,7 +37,7 @@ export async function POST(req: Request) {
 
     const orderRes = await fetch(baseUrl + '/v2/checkout/orders', {
       method: 'POST',
-      headers: { 'Authorization': bearerAuth(access_token), 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         intent: 'CAPTURE',
         purchase_units: purchaseUnits,

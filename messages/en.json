@@ -4,7 +4,18 @@
     "productos": "Products",
     "nosotros": "About Us",
     "carrito": "Cart",
-    "admin": "Admin"
+    "admin": "Admin",
+    "buscar": "Search...",
+    "blog": "Blog"
+  },
+  "Blog": {
+    "titulo": "Blog",
+    "subtitulo": "Tips, guides and everything about the aquarium world",
+    "leer_mas": "Read more",
+    "por": "By",
+    "publicado": "Published",
+    "volver": "Back to blog",
+    "sin_articulos": "No articles yet"
   },
   "HomePage": {
     "titulo": "Tlalchichi Store",
@@ -32,7 +43,8 @@
     "moneda": "Currency",
     "volver": "Back to catalog",
     "inicio": "Home",
-    "productos": "Products"
+    "productos": "Products",
+    "relacionados": "Related products"
   },
   "Cart": {
     "titulo": "Shopping Cart",

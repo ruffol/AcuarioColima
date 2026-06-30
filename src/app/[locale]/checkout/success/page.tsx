@@ -33,7 +33,7 @@ export default function SuccessPage() {
       fetch('/api/checkout/confirm-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paypal_order_id: paypalToken, email_usuario: 'ruffolmx@gmail.com' }),
+        body: JSON.stringify({ paypal_order_id: paypalToken, email_usuario: sessionStorage.getItem('tlalchichi_email') || '' }),
       })
         .then(r => r.json())
         .then(d => setStatusMsg(d.received ? 'Pedido confirmado. Te enviaremos un email en breve.' : 'Error: ' + (d.error || '')))

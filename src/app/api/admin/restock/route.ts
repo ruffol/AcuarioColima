@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
-import seedData from '@/lib/seed.json'
+import { requireAdmin } from '@/lib/admin'
 
-export async function POST() {
+export async function POST(req: Request) {
+  const authError = requireAdmin(req)
+  if (authError) return authError
+
   try {
     const db = getDb()
     const values = [42, 67, 69]

@@ -1,8 +1,8 @@
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { locales, defaultLocale } from '@/i18n/routing'
-import { Inter } from 'next/font/google'
+import { locales } from '@/i18n/routing'
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { headers } from 'next/headers'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -12,6 +12,13 @@ import CartDrawer from '@/components/cart/CartDrawer'
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-sans',
+})
+
+const headingFont = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-heading',
 })
 
 export function generateStaticParams() {
@@ -86,7 +93,7 @@ export default async function LocaleLayout({
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.tlalchichi.xyz'
 
   return (
-    <html lang={locale} className={inter.className} suppressHydrationWarning>
+    <html lang={locale} className={`${inter.variable} ${headingFont.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `

@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react'
 
 export function authHeaders(): Record<string, string> {
-  const token = typeof window !== 'undefined' ? sessionStorage.getItem('admin_token') : null
-  return token ? { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' }
+  return { 'Content-Type': 'application/json' }
 }
 
 export function useAdminToast() {

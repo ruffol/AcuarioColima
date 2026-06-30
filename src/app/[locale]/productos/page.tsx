@@ -1,12 +1,14 @@
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import { getModels, getProductTypes, getModelsByType } from '@/lib/db'
-import { Link, locales } from '@/i18n/routing'
-import ProductGrid from '@/components/product/ProductGrid'
+import { getProductTypes } from '@/lib/db'
+import { getCategories } from '@/lib/repositories/categories'
+import { getProducts } from '@/lib/repositories/products'
+import { locales } from '@/i18n/routing'
+import CatalogClient from '@/components/product/CatalogClient'
 
 interface Props {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ tipo?: string }>
+  searchParams: Promise<{ [key: string]: string | undefined }>
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -49,76 +51,57 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default async function ProductosPage({ params, searchParams }: Props) {
+export default async function ProductosPage({ params }: Props) {
   const { locale } = await params
-  const { tipo } = await searchParams
   const t = await getTranslations({ locale, namespace: 'ProductGrid' })
 
-  const models = tipo
-    ? getModelsByType(tipo)
-    : getModels({ activo: true })
   const types = getProductTypes()
+  const categories = getCategories()
+  const newProducts = getProducts({ activo: true })
 
-  // Encontrar el tipo seleccionado para obtener nombre e imágenes
-  const selectedType = tipo ? types.find((type: any) => type.slug === tipo) : null
-  const categoryName = selectedType
-    ? (locale === 'es' ? selectedType.nombre_es : selectedType.nombre_en)
-    : ''
-
-  // Imágenes del carrusel de categoría (desde la carpeta de imágenes)
-  const catImages: Record<string, string[]> = {
-    llaveros: ['/img/productos/llaveros/Llavero-tlalchichi-sentado-colima.png', '/img/productos/llaveros/Llavero-tlalchichi-parado-colima.png', '/img/productos/llaveros/Llavero-tlalchichi-joven-viejo-colima.png', '/img/productos/llaveros/varios1.png', '/img/productos/llaveros/varios2.png'],
-    portamacetas: ['/img/productos/portamacetas/tlalchichi-acostado-colima.png', '/img/productos/portamacetas/tlalchichi-acostado-mediano-colima.png', '/img/productos/portamacetas/tlalchichi-sentado-colima.png'],
-    alcacias: ['/img/productos/alcacias/tlalchichi-sentado-colima.png', '/img/productos/alcacias/tlalchichi-viejo-sentado-colima.png', '/img/productos/alcacias/tlalchichi-mascara-colima.png'],
-    cuencos: ['/img/productos/cuencos/tlalchichi-mazorca-colima.png', '/img/productos/cuencos/tlalchichi-viejo-sentado-color-colima.png'],
-  }
+  const initialProducts = newProducts.map((p: any) => ({
+    id: `new_${p.id}`,
+    source: 'product' as const,
+    slug: p.slug,
+    nombre_es: p.nombre_es,
+    nombre_en: p.nombre_en,
+    descripcion_es: p.descripcion_es,
+    descripcion_en: p.descripcion_en,
+    precio_mxn: p.precio_mxn,
+    precio_usd: p.precio_usd,
+    stock: p.stock,
+    image: Array.isArray(p.images) ? p.images[0] || null : null,
+    tipo: p.tipo,
+    category: null,
+  }))
 
   return (
     <>
-      {selectedType && tipo && catImages[tipo] && catImages[tipo].length > 0 && (
-        <section className="relative h-[40vh] overflow-hidden bg-arena">
-          <img src={catImages[tipo][0]} alt={categoryName} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-8 left-0 right-0 text-center">
-            <h1 className="text-4xl sm:text-5xl font-bold text-white drop-shadow-lg">{categoryName}</h1>
-          </div>
-        </section>
-      )}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl sm:text-4xl font-bold text-negro-suave mb-8">
+      <h1 className="text-3xl sm:text-4xl font-bold text-negro-suave text-center pt-12">
         {t('titulo')}
       </h1>
-
-      <div className="flex flex-wrap gap-2 mb-8">
-        <Link
-          href={`/productos`}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            !tipo
-              ? 'bg-terracota text-white'
-              : 'bg-arena text-negro-suave hover:bg-arena/80'
-          }`}
-        >
-          {t('filtro_todas')}
-        </Link>
-        {types.map((type: any) => (
-          <Link
-            key={type.slug}
-            href={`/productos?tipo=${encodeURIComponent(type.slug)}`}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              tipo === type.slug
-                ? 'bg-terracota text-white'
-                : 'bg-arena text-negro-suave hover:bg-arena/80'
-            }`}
-          >
-            {locale === 'es' ? type.nombre_es : type.nombre_en}
-          </Link>
-        ))}
-      </div>
-
-      <Suspense fallback={<div className="text-center py-12 text-muted">Cargando...</div>}>
-        <ProductGrid models={models} locale={locale} />
+      <Suspense fallback={
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-card border border-arena rounded-xl overflow-hidden animate-pulse">
+                <div className="aspect-[4/5] bg-arena" />
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-arena rounded w-3/4" />
+                  <div className="h-3 bg-arena rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      }>
+        <CatalogClient
+          locale={locale}
+          initialProducts={initialProducts}
+          initialTypes={types.map((t: any) => ({ slug: t.slug, nombre_es: t.nombre_es, nombre_en: t.nombre_en }))}
+          initialCategories={categories.map((c: any) => ({ slug: c.slug, nombre_es: c.nombre_es, nombre_en: c.nombre_en }))}
+        />
       </Suspense>
-    </div>
     </>
   )
 }

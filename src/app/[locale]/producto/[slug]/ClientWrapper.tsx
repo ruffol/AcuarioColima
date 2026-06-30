@@ -4,19 +4,6 @@ import { useState } from 'react'
 import AddToCartButton from './AddToCartButton'
 import type { CartItemVariant } from '@/types'
 
-interface ModelData {
-  id: number
-  slug: string
-  nombre_es: string
-  nombre_en: string
-  precio_mxn: number
-  precio_usd: number
-  stock: number
-  imagenes: string[]
-  colores: ColorOption[]
-  categoria_es: string
-}
-
 interface ColorOption {
   nombre_es: string
   nombre_en: string
@@ -25,17 +12,56 @@ interface ColorOption {
 }
 
 interface Props {
-  model: ModelData
+  model: any
   locale: string
+  source?: 'model' | 'product'
 }
 
-export default function ClientWrapper({ model, locale }: Props) {
-  const colors = Array.isArray(model.colores) ? model.colores : []
-  const [selectedColorIndex, setSelectedColorIndex] = useState<number>(0)
+export default function ClientWrapper({ model, locale, source = 'model' }: Props) {
+  if (source === 'product') {
+    const variant: CartItemVariant = {
+      modelId: String(model.id),
+      modelSlug: model.slug,
+      nombre_es: model.nombre_es,
+      nombre_en: model.nombre_en,
+      typeId: String(model.category_id || ''),
+      typeSlug: model.tipo || '',
+      typeNombreEs: model.tipo === 'pez' ? 'Pez' : 'Accesorio',
+      typeNombreEn: model.tipo === 'pez' ? 'Fish' : 'Accessory',
+      colorId: '0',
+      colorSlug: '',
+      colorNombreEs: '',
+      colorNombreEn: '',
+      colorHex: '#ccc',
+      image: Array.isArray(model.images) ? model.images[0] || '' : '',
+      precio_mxn: model.precio_mxn,
+      precio_usd: model.precio_usd,
+      stock: model.stock,
+    }
 
+    return (
+      <div className="space-y-6">
+        <div>
+          <p className="text-3xl font-semibold text-terracota">
+            {locale === 'es'
+              ? `$${model.precio_mxn} MXN`
+              : `$${model.precio_usd?.toFixed(2) || '0.00'} USD`}
+          </p>
+        </div>
+        {model.stock > 0 ? (
+          <AddToCartButton variant={variant} />
+        ) : (
+          <p className="text-amber-600 font-medium text-center py-4">Sin stock disponible</p>
+        )}
+      </div>
+    )
+  }
+
+  const colors: ColorOption[] = Array.isArray(model.colores) ? model.colores : []
+  const [selectedColorIndex, setSelectedColorIndex] = useState<number>(0)
   const selectedColor = colors[selectedColorIndex]
 
-  const variant: CartItemVariant | null = {
+  const variant: CartItemVariant = {
     modelId: String(model.id),
     modelSlug: model.slug,
     nombre_es: model.nombre_es,
@@ -57,17 +83,15 @@ export default function ClientWrapper({ model, locale }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* Precio */}
       <div>
         <p className="text-3xl font-semibold text-terracota">
           {locale === 'es'
             ? `$${model.precio_mxn} MXN`
-            : `$${model.precio_usd.toFixed(2)} USD`}
+            : `$${model.precio_usd?.toFixed(2) || '0.00'} USD`}
         </p>
         <p className="text-sm text-muted mt-1">Stock: {model.stock}</p>
       </div>
 
-      {/* Color selector */}
       {colors.length > 0 && (
         <div>
           <p className="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
@@ -94,30 +118,8 @@ export default function ClientWrapper({ model, locale }: Props) {
         </div>
       )}
 
-      {/* Especificaciones */}
-      <div className="bg-arena/50 rounded-2xl p-6">
-        <h2 className="font-semibold text-negro-suave mb-3">Especificaciones</h2>
-        <ul className="space-y-2 text-sm text-muted">
-          <li className="flex justify-between">
-            <span>Material</span>
-            <span className="font-medium text-negro-suave">Plástico PET</span>
-          </li>
-          <li className="flex justify-between">
-            <span>Altura</span>
-            <span className="font-medium text-negro-suave">4.2 cm</span>
-          </li>
-          <li className="flex justify-between">
-            <span>Colores disponibles</span>
-            <span className="font-medium text-negro-suave">{colors.length}</span>
-          </li>
-        </ul>
-      </div>
-
-      {/* Add to cart */}
       {variant && model.stock > 0 && (
-        <div className="pt-4">
-          <AddToCartButton variant={variant} />
-        </div>
+        <AddToCartButton variant={variant} />
       )}
       {model.stock <= 0 && (
         <p className="text-amber-600 font-medium text-center py-4">Sin stock disponible</p>

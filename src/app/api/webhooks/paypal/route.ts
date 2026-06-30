@@ -1,53 +1,69 @@
 import { NextResponse } from 'next/server'
 import { createOrder } from '@/lib/db'
 import { getResend } from '@/lib/resend'
-import { getPaypalBaseUrl, getPaypalClientId, getPaypalClientSecret } from '@/lib/paypal'
+import { getPaypalBaseUrl, getPayPalAccessToken, fetchPayPalOrder } from '@/lib/paypal'
 
-const B64 = Buffer.from;
-function basicAuth(cred: string): string {
-  const prefix = String.fromCharCode(66) + String.fromCharCode(97) + String.fromCharCode(115) + String.fromCharCode(105) + String.fromCharCode(99) + String.fromCharCode(32);
-  return prefix + cred;
-}
-function bearerAuth(token: string): string {
-  const prefix = String.fromCharCode(66, 101, 97, 114, 101, 114, 32);
-  return prefix + token;
-}
-
-async function getPayPalAccessToken(): Promise<string> {
-  const baseUrl = getPaypalBaseUrl()
-  const clientId = getPaypalClientId()
-  const clientSecret = getPaypalClientSecret()
-  const auth = B64(clientId + ':' + clientSecret).toString('base64')
-
-  const res = await fetch(baseUrl + '/v1/oauth2/token', {
-    method: 'POST',
-    headers: { 'Authorization': basicAuth(auth), 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'grant_type=client_credentials',
-  })
-
-  if (!res.ok) {
-    const errText = await res.text()
-    console.error('[paypal-webhook] Token error:', errText)
-    throw new Error('PayPal auth failed')
+async function verifyWebhookSignature(req: Request, body: string): Promise<boolean> {
+  const webhookId = process.env.PAYPAL_WEBHOOK_ID
+  if (!webhookId) {
+    console.warn('[paypal-webhook] PAYPAL_WEBHOOK_ID not set — skipping verification')
+    return true
   }
 
-  const data = await res.json()
-  return data.access_token
-}
+  const authAlgo = req.headers.get('PAYPAL-AUTH-ALGO')
+  const certUrl = req.headers.get('PAYPAL-CERT-URL')
+  const transmissionId = req.headers.get('PAYPAL-TRANSMISSION-ID')
+  const transmissionSig = req.headers.get('PAYPAL-TRANSMISSION-SIG')
+  const transmissionTime = req.headers.get('PAYPAL-TRANSMISSION-TIME')
 
-async function fetchPayPalOrder(orderId: string): Promise<any> {
-  const token = await getPayPalAccessToken()
-  const baseUrl = getPaypalBaseUrl()
-  const res = await fetch(baseUrl + '/v2/checkout/orders/' + orderId, {
-    headers: { 'Authorization': bearerAuth(token) },
-  })
-  if (!res.ok) throw new Error('Failed to fetch PayPal order ' + orderId)
-  return res.json()
+  if (!authAlgo || !certUrl || !transmissionId || !transmissionSig || !transmissionTime) {
+    console.error('[paypal-webhook] Missing verification headers')
+    return false
+  }
+
+  try {
+    const token = await getPayPalAccessToken()
+    const baseUrl = getPaypalBaseUrl()
+    const res = await fetch(baseUrl + '/v1/notifications/verify-webhook-signature', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        auth_algo: authAlgo,
+        cert_url: certUrl,
+        transmission_id: transmissionId,
+        transmission_sig: transmissionSig,
+        transmission_time: transmissionTime,
+        webhook_id: webhookId,
+        webhook_event: JSON.parse(body),
+      }),
+    })
+
+    if (!res.ok) {
+      console.error('[paypal-webhook] Verification API error:', await res.text())
+      return false
+    }
+
+    const data = await res.json()
+    return data.verification_status === 'SUCCESS'
+  } catch (err) {
+    console.error('[paypal-webhook] Verification exception:', err)
+    return false
+  }
 }
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const rawBody = await req.text()
+    const body = JSON.parse(rawBody)
+
+    if (!(await verifyWebhookSignature(req, rawBody))) {
+      console.error('[paypal-webhook] Signature verification failed')
+      return NextResponse.json({ error: 'Verification failed' }, { status: 401 })
+    }
+
     console.log('[paypal-webhook] Event:', body.event_type)
 
     if (body.event_type === 'CHECKOUT.ORDER.APPROVED') {
@@ -96,8 +112,6 @@ export async function POST(req: Request) {
         payment_status: 'completed',
         paypal_order_id: orderId,
       })
-
-      console.log('[paypal-webhook] Order created:', order.id)
 
       console.log('[paypal-webhook] Order created:', order.id)
 

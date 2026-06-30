@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { getResend } from '@/lib/resend'
-import { createOrder, createOrderItems, decrementStock } from '@/lib/db'
+import { createFullOrder } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         if (metadata.items) itemsData = JSON.parse(metadata.items)
       } catch {}
 
-      const order = createOrder({
+      const order = createFullOrder({
         email: session.customer_details?.email || metadata.email || '',
         nombre: metadata.nombre || '',
         pais: metadata.pais || 'MX',
@@ -56,27 +56,8 @@ export async function POST(req: Request) {
         payment_provider: 'stripe',
         payment_status: 'completed',
         stripe_session_id: session.id,
+        items: itemsData.length > 0 ? itemsData : undefined,
       })
-
-      if (itemsData.length > 0) {
-        const orderItems = itemsData.map((item: any) => ({
-          order_id: order.id,
-          model_id: item.modelId || 0,
-          product_type_id: item.productTypeId || 0,
-          color_id: item.colorId || 0,
-          quantity: item.quantity || 1,
-          precio_unitario: Math.round((item.precio || 0) * (moneda === 'MXN' ? 100 : 100)),
-        }))
-        createOrderItems(orderItems)
-
-        for (const item of itemsData) {
-          const modelId = item.modelId
-          const productTypeId = item.productTypeId
-          if (modelId && productTypeId) {
-            decrementStock(modelId, productTypeId, item.quantity || 1)
-          }
-        }
-      }
 
       // Enviar email (si Resend esta configurado)
       try {

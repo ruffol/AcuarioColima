@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { getResend } from '@/lib/resend'
 import { getPaypalBaseUrl, getPaypalClientId, getPaypalClientSecret } from '@/lib/paypal'
-import { createOrder, createOrderItems, decrementStock } from '@/lib/db'
+import { createFullOrder } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
@@ -114,34 +114,15 @@ export async function POST(req: Request) {
       })
     }
 
-    const order = createOrder({
+    const order = createFullOrder({
       email, nombre, pais, direccion, moneda,
       subtotal, costo_envio: costoEnvio, total,
       payment_provider: provider,
       payment_status: 'completed',
       stripe_session_id: provider === 'stripe' ? providerId : undefined,
       paypal_order_id: provider === 'paypal' ? providerId : undefined,
+      items: itemsData.length > 0 ? itemsData : undefined,
     })
-
-    if (itemsData.length > 0) {
-      const orderItems = itemsData.map((item: any) => ({
-        order_id: order.id,
-        model_id: item.modelId || 0,
-        product_type_id: item.productTypeId || 0,
-        color_id: item.colorId || 0,
-        quantity: item.quantity || 1,
-        precio_unitario: Math.round((item.precio || 0) * (moneda === 'MXN' ? 100 : 100)),
-      }))
-      createOrderItems(orderItems)
-
-      for (const item of itemsData) {
-        const modelId = item.modelId
-        const productTypeId = item.productTypeId
-        if (modelId && productTypeId) {
-          decrementStock(modelId, productTypeId, item.quantity || 1)
-        }
-      }
-    }
 
     // Enviar email (al email real del usuario si se proporciono)
     const emailDestino = email_usuario || email

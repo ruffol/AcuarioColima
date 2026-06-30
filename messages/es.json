@@ -4,7 +4,18 @@
     "productos": "Productos",
     "nosotros": "Nosotros",
     "carrito": "Carrito",
-    "admin": "Admin"
+    "admin": "Admin",
+    "buscar": "Buscar...",
+    "blog": "Blog"
+  },
+  "Blog": {
+    "titulo": "Blog",
+    "subtitulo": "Consejos, guías y todo sobre el mundo del acuario",
+    "leer_mas": "Leer más",
+    "por": "Por",
+    "publicado": "Publicado",
+    "volver": "Volver al blog",
+    "sin_articulos": "No hay artículos aún"
   },
   "HomePage": {
     "titulo": "Tlalchichi Store",
@@ -32,7 +43,8 @@
     "moneda": "Moneda",
     "volver": "Volver al catálogo",
     "inicio": "Inicio",
-    "productos": "Productos"
+    "productos": "Productos",
+    "relacionados": "Productos relacionados"
   },
   "Cart": {
     "titulo": "Carrito de Compras",

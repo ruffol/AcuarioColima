@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 import { getModelsByType, getProductTypeBySlug } from '@/lib/db'
 import { locales } from '@/i18n/routing'
 import ProductGrid from '@/components/product/ProductGrid'

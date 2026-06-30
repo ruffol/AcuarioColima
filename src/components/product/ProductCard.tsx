@@ -1,23 +1,23 @@
 'use client'
 
 import { Link } from '@/i18n/routing'
-import type { Model } from '@/types'
 
 interface Props {
-  model: Model
+  model: any
   locale: string
 }
 
 export default function ProductCard({ model, locale }: Props) {
   const nombre = locale === 'es' ? model.nombre_es : model.nombre_en
-  const imagen = model.imagenes?.[0] || ''
+  const imagen = model.imagenes?.[0] || model.image || ''
+  const tipo = model.tipo || (model.source === 'model' ? 'artesania' : model.tipo)
 
   return (
     <Link
       href={`/producto/${model.slug}`}
       className="group bg-card border border-card hover:border-arena/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg"
     >
-      <div className="aspect-[4/5] bg-arena overflow-hidden">
+      <div className="aspect-[4/5] bg-arena overflow-hidden relative">
         {imagen ? (
           <img
             src={imagen}
@@ -32,11 +32,25 @@ export default function ProductCard({ model, locale }: Props) {
             </svg>
           </div>
         )}
+        {tipo && (
+          <span className={`absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded font-medium ${
+            tipo === 'pez' ? 'bg-blue-500/80 text-white' :
+            tipo === 'accesorio' ? 'bg-arena/80 text-negro-suave' :
+            'bg-terracota/80 text-white'
+          }`}>
+            {tipo === 'pez' ? (locale === 'es' ? 'Pez' : 'Fish') :
+             tipo === 'accesorio' ? (locale === 'es' ? 'Acc' : 'Acc') :
+             locale === 'es' ? 'Arte' : 'Art'}
+          </span>
+        )}
       </div>
       <div className="p-4 space-y-1.5">
         <h3 className="font-medium text-negro-suave group-hover:text-terracota transition-colors line-clamp-2">
           {nombre}
         </h3>
+        <p className="text-sm text-terracota font-medium">
+          ${model.precio_mxn} MXN
+        </p>
       </div>
     </Link>
   )

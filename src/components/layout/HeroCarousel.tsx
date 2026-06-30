@@ -35,8 +35,6 @@ const alts = [
   'Tlalchichi viejo sentado color artesanal de Colima',
 ]
 
-interface Props {}
-
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)

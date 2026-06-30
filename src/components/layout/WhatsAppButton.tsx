@@ -33,7 +33,7 @@ export default function WhatsAppButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${base} fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg shadow-[#25D366]/30 hover:shadow-xl hover:shadow-[#25D366]/40 items-center justify-center`}
+        className={`${base} fixed bottom-8 right-6 z-50 w-14 h-14 rounded-full shadow-xl shadow-[#25D366]/30 hover:shadow-2xl hover:shadow-[#25D366]/40 items-center justify-center`}
         aria-label="WhatsApp"
       >
         <svg

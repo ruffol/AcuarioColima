@@ -8,16 +8,34 @@ interface Props {
   nombre: string
   imagenes: string[]
   icon?: string | null
+  productCount?: number
 }
 
 const GRADIENTS = [
-  'from-primary/20 to-secondary/10',
-  'from-success/20 to-primary/10',
-  'from-secondary/20 to-success/10',
-  'from-primary/30 to-surface',
+  'from-[#0F4C81]/40 via-[#0F4C81]/10 to-transparent',
+  'from-[#10B981]/40 via-[#10B981]/10 to-transparent',
+  'from-[#4FC3F7]/40 via-[#4FC3F7]/10 to-transparent',
+  'from-[#22D3EE]/40 via-[#22D3EE]/10 to-transparent',
+  'from-[#8B5CF6]/40 via-[#8B5CF6]/10 to-transparent',
+  'from-[#F59E0B]/40 via-[#F59E0B]/10 to-transparent',
+  'from-[#EF4444]/40 via-[#EF4444]/10 to-transparent',
+  'from-[#EC4899]/40 via-[#EC4899]/10 to-transparent',
+  'from-[#0F4C81]/40 via-[#10B981]/10 to-transparent',
+  'from-[#4FC3F7]/40 via-[#22D3EE]/10 to-transparent',
 ]
 
-export default function CategoryCard({ slug, nombre, imagenes, icon }: Props) {
+const CATEGORY_IMAGES: Record<string, string> = {
+  peces: 'https://images.unsplash.com/photo-1583494939058-8c56ec0aecfa?w=600&q=80',
+  peceras: 'https://images.unsplash.com/photo-1597263481160-5af1e8e7b30f?w=600&q=80',
+  plantas: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db1?w=600&q=80',
+  filtros: 'https://images.unsplash.com/photo-1583485088034-697b5bc54cc3?w=600&q=80',
+  alimentos: 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=600&q=80',
+  decoracion: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
+  iluminacion: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600&q=80',
+  medicamentos: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80',
+}
+
+export default function CategoryCard({ slug, nombre, imagenes, icon, productCount }: Props) {
   const [current, setCurrent] = useState(0)
   const [gradientIdx] = useState(() => Math.floor(Math.random() * GRADIENTS.length))
 
@@ -31,60 +49,57 @@ export default function CategoryCard({ slug, nombre, imagenes, icon }: Props) {
     return () => clearInterval(timer)
   }, [next, imagenes.length])
 
-  // Icon-based card (new Premium Nature style)
-  if (icon && !imagenes.length) {
-    return (
-      <Link
-        href={`/productos?category_slug=${slug}`}
-        className="group relative flex flex-col items-center justify-center gap-3 p-8 rounded-2xl bg-gradient-to-br border border-border hover:border-primary/30 transition-all duration-300 min-h-[200px] overflow-hidden"
-        style={{ backgroundImage: `var(--bg-gradient-${gradientIdx})` }}
-      >
-        <div className={`absolute inset-0 bg-gradient-to-br ${GRADIENTS[gradientIdx]} opacity-50 group-hover:opacity-80 transition-opacity duration-300`} />
-        <span className="relative text-3xl group-hover:scale-110 transition-transform duration-300">{icon}</span>
-        <span className="relative text-base font-semibold text-foreground font-[family-name:var(--font-heading)]">{nombre}</span>
-        <span className="relative text-xs text-muted group-hover:text-primary transition-colors">Explorar →</span>
-      </Link>
-    )
-  }
+  const bgImage = imagenes[0] || CATEGORY_IMAGES[slug]
+  const hasImage = !!bgImage
 
-  // No images fallback
-  if (!imagenes.length) {
-    return (
-      <Link
-        href={`/productos?tipo=${slug}`}
-        className="flex flex-col items-center justify-center gap-3 p-10 bg-card border border-border rounded-2xl hover:border-primary/30 hover:shadow-elevated transition-all duration-300 min-h-[280px]"
-      >
-        <span className="text-lg font-semibold text-foreground font-[family-name:var(--font-heading)]">{nombre}</span>
-        <span className="text-sm text-muted">Ver productos →</span>
-      </Link>
-    )
-  }
-
-  // Image carousel card
   return (
     <Link
-      href={`/productos?tipo=${slug}`}
-      className="group block bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-elevated transition-all duration-300"
+      href={`/productos?category_slug=${slug}`}
+      className="group relative block rounded-2xl overflow-hidden border border-white/[0.08] hover:border-[#38BDF8]/40 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)] bg-[#0E172A]"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-surface">
-        {imagenes.map((img, i) => (
-          <img
-            key={img}
-            src={img}
-            alt={`${nombre} ${i + 1}`}
-            loading="lazy"
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
-              i === current ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
-            }`}
-          />
-        ))}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent" />
+      {/* Image or gradient */}
+      <div className="aspect-[4/3] overflow-hidden relative">
+        {hasImage ? (
+          <>
+            <img
+              src={bgImage}
+              alt={nombre}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071221]/90 via-[#071221]/30 to-transparent" />
+          </>
+        ) : (
+          <>
+            <div className={`w-full h-full bg-gradient-to-br ${GRADIENTS[gradientIdx]} group-hover:scale-105 transition-transform duration-700`} />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071221]/60 to-transparent" />
+          </>
+        )}
+
+        {/* Glow on hover */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-[#38BDF8]/10 via-transparent to-transparent" />
+
+        {/* Badge */}
+        {productCount && (
+          <div className="absolute top-3 left-3">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/70 font-medium">
+              {productCount} {productCount === 1 ? 'producto' : 'productos'}
+            </span>
+          </div>
+        )}
+
+        {/* Hover indicator */}
+        <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-2 transition-all duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-3.5 h-3.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+          </svg>
+        </div>
       </div>
-      <div className="p-4 text-center">
-        <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors font-[family-name:var(--font-heading)]">
+
+      {/* Info */}
+      <div className="p-4">
+        <h3 className="text-base font-semibold text-white group-hover:text-[#38BDF8] transition-colors font-[family-name:var(--font-heading)]">
           {nombre}
         </h3>
-        <p className="text-sm text-muted mt-1">Ver productos →</p>
       </div>
     </Link>
   )

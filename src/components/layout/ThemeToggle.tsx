@@ -21,7 +21,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 rounded-lg text-muted hover:text-foreground hover:bg-surface transition-colors"
+      className="p-2 rounded-lg text-blue-200/60 hover:text-white hover:bg-white/5 transition-colors"
       aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
       title={dark ? 'Modo claro' : 'Modo oscuro'}
     >

@@ -21,7 +21,7 @@ export default function LanguageToggle() {
     <button
       onClick={toggle}
       disabled={isPending}
-      className="text-sm font-medium text-negro-suave/70 hover:text-terracota transition-colors"
+      className="text-sm font-medium text-blue-200/60 hover:text-white transition-colors"
     >
       {locale === 'es' ? 'EN' : 'ES'}
     </button>

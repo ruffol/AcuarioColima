@@ -2,8 +2,20 @@
 
 import { Link } from '@/i18n/routing'
 
+interface ProductCardModel {
+  slug: string
+  nombre_es: string
+  nombre_en: string
+  precio_mxn: number
+  tipo?: string
+  weight_kg?: number
+  image?: string
+  imagenes?: string[]
+  source?: string
+}
+
 interface Props {
-  model: any
+  model: ProductCardModel
   locale: string
 }
 
@@ -51,7 +63,7 @@ export default function ProductCard({ model, locale }: Props) {
         <p className="text-sm text-terracota font-medium">
           ${model.precio_mxn} MXN
         </p>
-        {model.weight_kg > 0 && (
+        {model.weight_kg != null && model.weight_kg > 0 && (
           <p className="text-[11px] text-negro-suave/50">{(model.weight_kg * 1000).toFixed(0)} g</p>
         )}
       </div>

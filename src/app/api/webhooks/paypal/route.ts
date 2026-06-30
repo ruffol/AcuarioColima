@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createOrder } from '@/lib/db'
-import { getResend } from '@/lib/resend'
+import { sendOrderConfirmation } from '@/lib/services/email'
 import { getPaypalBaseUrl, getPayPalAccessToken, fetchPayPalOrder } from '@/lib/paypal'
 
 async function verifyWebhookSignature(req: Request, body: string): Promise<boolean> {
@@ -113,18 +113,14 @@ export async function POST(req: Request) {
       })
 
 
-      // Send email
       try {
-        if (process.env.RESEND_API_KEY && email) {
-          const resend = getResend()
-          await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
-            to: [email],
-            subject: 'Gracias por tu compra - AcuarioColima',
-            html: '<p>Hola ' + nombre + ',</p><p>Gracias por tu compra. Recibiras tu pedido pronto.</p><p>Total: $' + (amount * (moneda === 'MXN' ? 1 : 1)).toFixed(2) + ' ' + moneda + '</p>',
+        if (email) {
+          await sendOrderConfirmation({
+            email,
+            nombre: nombre || 'Cliente',
+            total: amount * (moneda === 'MXN' ? 1 : 1),
+            moneda,
           })
-
-
         }
       } catch (emailErr) {
         console.error('[paypal-webhook] Email error:', emailErr)

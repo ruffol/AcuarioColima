@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
-import { getResend } from '@/lib/resend'
+import { sendOrderConfirmation } from '@/lib/services/email'
 import { getPaypalBaseUrl, getPaypalClientId, getPaypalClientSecret } from '@/lib/paypal'
 import { createFullOrder } from '@/lib/db'
 
@@ -126,24 +126,14 @@ export async function POST(req: Request) {
 
     // Enviar email (al email real del usuario si se proporciono)
     const emailDestino = email_usuario || email
-    if (process.env.RESEND_API_KEY && emailDestino) {
+    if (emailDestino) {
       try {
-        const resend = getResend()
-        await resend.emails.send({
-          from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
-          to: emailDestino,
-          subject: 'Gracias por tu compra! - AcuarioColima',
-          html: `
-            <h1>Gracias por tu compra!</h1>
-            <p>Hola ${nombre || 'Cliente'},</p>
-            <p>Tu pedido ha sido confirmado.</p>
-            <p><strong>Total:</strong> $${(total / 100).toFixed(2)} ${moneda}</p>
-            <p>Te enviaremos un correo cuando tu pedido sea enviado.</p>
-            <p>Gracias por apoyar el arte mexicano!</p>
-          `,
+        await sendOrderConfirmation({
+          email: emailDestino,
+          nombre: nombre || 'Cliente',
+          total: total / 100,
+          moneda,
         })
-
-
       } catch (emailErr) {
         console.error('[confirm-order] Email error:', emailErr)
       }

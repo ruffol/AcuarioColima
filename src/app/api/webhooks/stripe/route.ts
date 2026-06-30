@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
-import { getResend } from '@/lib/resend'
+import { sendOrderConfirmation } from '@/lib/services/email'
 import { createFullOrder } from '@/lib/db'
 
 export async function POST(req: Request) {
@@ -59,26 +59,13 @@ export async function POST(req: Request) {
         items: itemsData.length > 0 ? itemsData : undefined,
       })
 
-      // Enviar email (si Resend esta configurado)
       try {
-        if (process.env.RESEND_API_KEY) {
-          const resend = getResend()
-          await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'AcuarioColima <onboarding@resend.dev>',
-            to: session.customer_details?.email || metadata.email,
-            subject: 'Gracias por tu compra! - AcuarioColima',
-            html: `
-              <h1>Gracias por tu compra!</h1>
-              <p>Hola ${metadata.nombre || 'Cliente'},</p>
-              <p>Tu pedido ha sido confirmado.</p>
-              <p><strong>Total:</strong> $${((totalAmount) / 100).toFixed(2)} ${moneda}</p>
-              <p>Te enviaremos un correo cuando tu pedido sea enviado.</p>
-              <p>Gracias por apoyar el arte mexicano!</p>
-            `,
-          })
-
-
-        }
+        await sendOrderConfirmation({
+          email: session.customer_details?.email || metadata.email,
+          nombre: metadata.nombre || 'Cliente',
+          total: totalAmount / 100,
+          moneda,
+        })
       } catch (emailErr) {
         console.error('[stripe-webhook] Email error:', emailErr)
       }

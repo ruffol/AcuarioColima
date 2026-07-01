@@ -7,7 +7,6 @@ const DB_PATH = path.join(process.cwd(), '.data', 'tlalchichi.db')
 
 declare global {
   var __tlalchichi_db: Database.Database | undefined
-  var __tlalchichi_initializing: boolean | undefined
 }
 
 export let _db: Database.Database | null = null
@@ -21,19 +20,6 @@ function setGlobalDb(db: Database.Database): void {
   globalThis.__tlalchichi_db = db
 }
 
-function initDbInternal(db: Database.Database): void {
-  if (globalThis.__tlalchichi_initializing) return
-  globalThis.__tlalchichi_initializing = true
-  try {
-    initTables()
-    migrateOrderItemsSchema()
-    migrateOldProducts()
-    seed()
-  } finally {
-    globalThis.__tlalchichi_initializing = false
-  }
-}
-
 export function getDb(): Database.Database {
   const existing = getGlobalDb()
   if (existing) return existing
@@ -44,13 +30,24 @@ export function getDb(): Database.Database {
   }
 
   console.log('[DB] Creating database at', DB_PATH)
+
   const db = new Database(DB_PATH)
   db.pragma('journal_mode = WAL')
   db.pragma('foreign_keys = ON')
+
+  try {
+    initTables()
+    migrateOrderItemsSchema()
+    migrateOldProducts()
+    seed()
+  } catch (e: any) {
+    console.error('[DB] Initialization failed:', e?.message)
+    db.close()
+    throw e
+  }
+
   setGlobalDb(db)
-
-  initDbInternal(db)
-
+  console.log('[DB] Database initialized successfully')
   return db
 }
 

@@ -90,8 +90,10 @@ export function getProducts(filters?: ProductFilters): Product[] {
   try {
     return (db.prepare(sql).all(...params) as any[]).map(rowToProduct)
   } catch (e: any) {
+    const err = new Error(`SQL: ${sql} — ${e?.message}`)
+    err.stack = e?.stack
     console.error('[DB] SQL Error:', e?.message, 'SQL:', sql)
-    throw e
+    throw err
   }
 }
 

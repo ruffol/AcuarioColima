@@ -7,13 +7,6 @@ interface Props {
   locale?: string
 }
 
-const stats = [
-  { value: '+1200', label: 'Clientes satisfechos' },
-  { value: '250+', label: 'Especies' },
-  { value: '450+', label: 'Accesorios' },
-  { value: 'Envíos', label: 'a todo México' },
-]
-
 const trendingSearches = ['Betta', 'Guppy', 'Filtro', 'Pecera', 'Planta']
 
 export default function Hero({ locale = 'es' }: Props) {
@@ -121,15 +114,6 @@ export default function Hero({ locale = 'es' }: Props) {
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
-              {stats.map((s) => (
-                <div key={s.value} className="text-center sm:text-left">
-                  <p className="text-lg sm:text-xl font-bold text-white">{s.value}</p>
-                  <p className="text-xs text-blue-200/40">{s.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Right column — Visual */}

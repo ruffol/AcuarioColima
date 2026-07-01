@@ -10,6 +10,7 @@ export async function GET(req: Request) {
   const dificultad = url.searchParams.get('dificultad') || ''
   const precioMin = parseFloat(url.searchParams.get('precio_min') || '')
   const precioMax = parseFloat(url.searchParams.get('precio_max') || '')
+  const categorySlug = url.searchParams.get('category_slug') || ''
   const soloAcuario = url.searchParams.get('acuario') === 'true'
 
   // 1. Old models (only if not filtering by new-only params)
@@ -55,6 +56,7 @@ export async function GET(req: Request) {
   const newProducts = getProducts({
     busqueda: busqueda || undefined,
     tipo: (tipo && ['pez', 'accesorio'].includes(tipo)) ? tipo : undefined,
+    category_slug: categorySlug || undefined,
     agua: agua || undefined,
     dificultad: dificultad || undefined,
     precio_min: precioMin || undefined,

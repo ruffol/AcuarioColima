@@ -41,6 +41,7 @@ export default function CatalogClient({ locale, initialProducts, initialTypes, i
   const [showFilters, setShowFilters] = useState(false)
 
   const activeTipo = searchParams.get('tipo') || ''
+  const activeCategory = searchParams.get('category_slug') || ''
   const activeAgua = searchParams.get('agua') || ''
   const activeDiff = searchParams.get('dificultad') || ''
   const activeBusqueda = searchParams.get('busqueda') || ''
@@ -68,7 +69,15 @@ export default function CatalogClient({ locale, initialProducts, initialTypes, i
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    updateParams({ busqueda: searchInput, tipo: activeTipo, agua: activeAgua, dificultad: activeDiff, precio_min: activePrecioMin, precio_max: activePrecioMax })
+    updateParams({ busqueda: searchInput, tipo: activeTipo, category_slug: activeCategory, agua: activeAgua, dificultad: activeDiff, precio_min: activePrecioMin, precio_max: activePrecioMax })
+  }
+
+  const handleFilterClick = (filter: { tipo?: string; category_slug?: string }) => {
+    const params = new URLSearchParams()
+    if (filter.tipo) params.set('tipo', filter.tipo)
+    if (filter.category_slug) params.set('category_slug', filter.category_slug)
+    fetchProducts(Object.fromEntries(params.entries()))
+    router.push(`${pathname}?${params.toString()}`, { scroll: false })
   }
 
   const clearFilters = () => {
@@ -76,6 +85,13 @@ export default function CatalogClient({ locale, initialProducts, initialTypes, i
     setProducts(initialProducts || [])
     router.push(pathname, { scroll: false })
   }
+
+  const FILTER_BUTTONS = [
+    { label: 'Peces', tipo: 'pez' },
+    { label: 'Accesorios', tipo: 'accesorio' },
+    { label: 'Peceras', category_slug: 'peceras' },
+    { label: 'Alimentos', category_slug: 'alimentos' },
+  ] as const
 
   const types = [
     { slug: '', nombre_es: 'Todos', nombre_en: 'All' },
@@ -92,6 +108,38 @@ export default function CatalogClient({ locale, initialProducts, initialTypes, i
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Quick filter buttons */}
+      <div className="flex flex-wrap justify-center gap-2 mb-6">
+        <button
+          onClick={() => { setSearchInput(''); setProducts(initialProducts || []); router.push(pathname, { scroll: false }) }}
+          className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+            !activeTipo && !activeCategory
+              ? 'bg-[#4FC3F7] text-white'
+              : 'bg-white/10 text-blue-200/60 hover:bg-white/20 hover:text-white'
+          }`}
+        >
+          Todos
+        </button>
+        {FILTER_BUTTONS.map((btn) => {
+          const isActive = 'tipo' in btn
+            ? activeTipo === (btn as any).tipo
+            : activeCategory === btn.category_slug
+          return (
+            <button
+              key={btn.label}
+              onClick={() => handleFilterClick({ tipo: (btn as any).tipo, category_slug: (btn as any).category_slug })}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-[#4FC3F7] text-white'
+                  : 'bg-white/10 text-blue-200/60 hover:bg-white/20 hover:text-white'
+              }`}
+            >
+              {btn.label}
+            </button>
+          )
+        })}
+      </div>
+
       {/* Search bar */}
       <form onSubmit={handleSearch} className="mb-8">
         <div className="flex gap-2 max-w-2xl mx-auto">

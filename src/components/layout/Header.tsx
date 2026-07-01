@@ -50,12 +50,6 @@ export default function Header() {
             <Link href="/productos" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/productos' || pathname.startsWith('/producto/') ? 'text-white bg-white/10' : 'text-blue-200/60 hover:text-white hover:bg-white/5'}`}>
               {t('productos')}
             </Link>
-            <Link href="/productos?tipo=pez" className="px-3 py-2 rounded-lg text-sm font-medium text-blue-200/60 hover:text-white hover:bg-white/5 transition-colors">
-              Peces
-            </Link>
-            <Link href="/productos?tipo=accesorio" className="px-3 py-2 rounded-lg text-sm font-medium text-blue-200/60 hover:text-white hover:bg-white/5 transition-colors">
-              Accesorios
-            </Link>
             <Link href="/blog" className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/blog' || pathname.startsWith('/blog/') ? 'text-white bg-white/10' : 'text-blue-200/60 hover:text-white hover:bg-white/5'}`}>
               {t('blog')}
             </Link>

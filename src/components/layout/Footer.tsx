@@ -24,9 +24,7 @@ export default function Footer() {
                 AcuarioColima
               </span>
             </div>
-            <p className="text-sm text-blue-200/60 leading-relaxed">
-              {t('envios')}
-            </p>
+            
             <div className="flex items-center gap-2 mt-4">
               <ThemeToggle />
 

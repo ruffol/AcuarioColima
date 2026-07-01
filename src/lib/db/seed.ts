@@ -101,11 +101,11 @@ const SEED_FISH = [
 
 const SEED_ACCESSORIES = [
   {
-    slug: 'peceras', nombre_es: 'Peceras', nombre_en: 'Aquariums',
+    slug: 'peceras', nombre_es: 'Pecera de Vidrio', nombre_en: 'Glass Aquarium',
     descripcion_es: 'Peceras de vidrio de alta calidad. Incluyen tapa y luz LED básica. Ideales para peces tropicales y de agua fría.',
     descripcion_en: 'High quality glass aquariums. Includes lid and basic LED light. Ideal for tropical and cold water fish.',
     category_slug: 'peceras', brand: 'AcuaTech', sku: 'TNK-020-001',
-    precio_mxn: 450, precio_usd: 25, stock: 0, images: ['/img/productos/peceras.png'], size_cm: 'variable',
+    precio_mxn: 450, precio_usd: 25, stock: 1, images: ['/img/productos/peceras.png'], size_cm: 'variable',
     tipo: 'accesorio', destacado: 1, activo: 1,
     variants: [
       { name: '20 Litros', sku: 'TNK-020-001', price: 450, stock: 30 },
@@ -125,7 +125,7 @@ const SEED_ACCESSORIES = [
     descripcion_es: 'Filtro interno sumergible con bomba de 650 litros por hora. Incluye medios filtrantes y ventosas para fijación.',
     descripcion_en: 'Submersible internal filter with 650 liter per hour pump. Includes filter media and suction cups.',
     category_slug: 'filtros', brand: 'Marina', sku: 'FIL-INT-650',
-    precio_mxn: 350, precio_usd: 19, stock: 20, images: ['/img/productos/filtro interno de 650LH.png'], size_cm: '20x10x15',
+    precio_mxn: 350, precio_usd: 19, stock: 20, images: ['/img/productos/filtro-interno-650lh.png'], size_cm: '20x10x15',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
   {
@@ -141,7 +141,7 @@ const SEED_ACCESSORIES = [
     descripcion_es: 'Arena fina natural para acuarios. Ideal para peces de fondo y plantas acuáticas. 5 kilogramos.',
     descripcion_en: 'Natural fine sand for aquariums. Ideal for bottom fish and aquatic plants. 5 kilograms.',
     category_slug: 'sustratos', brand: 'NatureSoil', sku: 'SUB-SND-005',
-    precio_mxn: 180, precio_usd: 10, stock: 40, images: ['/img/productos/sustrato arena de silice.png'], size_cm: '30x20x5',
+    precio_mxn: 180, precio_usd: 10, stock: 40, images: ['/img/productos/sustrato-arena-silice.png'], size_cm: '30x20x5',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
   {
@@ -149,7 +149,7 @@ const SEED_ACCESSORIES = [
     descripcion_es: 'Bomba de aire silenciosa para acuarios de hasta 60 litros. Incluye tubo y difusor de burbuja fina.',
     descripcion_en: 'Silent air pump for aquariums up to 60 liters. Includes tube and fine bubble diffuser.',
     category_slug: 'bombas-aire', brand: 'Marina', sku: 'AIR-PMP-001',
-    precio_mxn: 220, precio_usd: 12, stock: 35, images: ['/img/productos/bomba de aire chica.png'], size_cm: '10x6x8',
+    precio_mxn: 220, precio_usd: 12, stock: 35, images: ['/img/productos/bomba-aire-chica.png'], size_cm: '10x6x8',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
 ]

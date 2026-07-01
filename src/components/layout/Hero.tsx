@@ -149,9 +149,9 @@ export default function Hero({ locale = 'es' }: Props) {
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <p className="text-xs text-blue-200/50 uppercase tracking-wider">Producto del mes</p>
-                    <p className="text-lg font-semibold text-white">Betta Galaxy</p>
+                    <p className="text-lg font-semibold text-white">Pez Japonés</p>
                   </div>
-                  <span className="text-lg font-bold text-[#4FC3F7]">$180</span>
+                  <span className="text-lg font-bold text-[#4FC3F7]">$60</span>
                 </div>
 
                 {/* Rating */}

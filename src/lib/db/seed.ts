@@ -68,7 +68,7 @@ const SEED_FISH = [
     compatible_with: [],
   },
   {
-    slug: 'pez-dorado', nombre_es: 'Pez Dorado', nombre_en: 'Goldfish',
+    slug: 'pez-dorado', nombre_es: 'Pez Japonés', nombre_en: 'Goldfish',
     descripcion_es: 'El clásico pez de agua fría. Resistente y fácil de cuidar, pero requiere espacio adecuado.',
     descripcion_en: 'The classic cold water fish. Hardy and easy to care for, but requires adequate space.',
     category_slug: 'peces-agua-fria', brand: 'N/A', sku: 'FISH-GOL-001',

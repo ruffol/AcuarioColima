@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: 'Todo para tu acuario en Colima: peces tropicales, accesorios, plantas acuáticas y más. Envíos a todo México.',
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: '/img/favilogotlalchichi.png',
-    apple: '/img/favilogotlalchichi.png',
+    icon: '/img/logos/iconon.png',
+    apple: '/img/logos/iconon.png',
   },
 }
 

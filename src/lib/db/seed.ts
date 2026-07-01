@@ -114,26 +114,11 @@ const SEED_ACCESSORIES = [
     ],
   },
   {
-    slug: 'filtro-externo-500l', nombre_es: 'Filtro Externo 500 L/h', nombre_en: 'External Filter 500 L/h',
-    descripcion_es: 'Filtro externo con bomba de 500 litros por hora. Ideal para acuarios de 60-100 litros. Incluye medios filtrantes.',
-    descripcion_en: 'External filter with 500 liter per hour pump. Ideal for 60-100 liter aquariums. Includes filter media.',
-    category_slug: 'filtros', brand: 'AquaClear', sku: 'FIL-EXT-500',
-    precio_mxn: 890, precio_usd: 49, stock: 15, images: [], size_cm: '25x15x20',
-  },
-  {
     slug: 'filtro-interno-650lh', nombre_es: 'Filtro Interno 650 L/h', nombre_en: 'Internal Filter 650 L/h',
     descripcion_es: 'Filtro interno sumergible con bomba de 650 litros por hora. Incluye medios filtrantes y ventosas para fijación.',
     descripcion_en: 'Submersible internal filter with 650 liter per hour pump. Includes filter media and suction cups.',
     category_slug: 'filtros', brand: 'Marina', sku: 'FIL-INT-650',
     precio_mxn: 350, precio_usd: 19, stock: 20, images: ['/img/productos/filtro-interno-650lh.png'], size_cm: '20x10x15',
-    tipo: 'accesorio', destacado: 0, activo: 1,
-  },
-  {
-    slug: 'alimento-escamas', nombre_es: 'Alimento en Escamas', nombre_en: 'Flake Food',
-    descripcion_es: 'Alimento balanceado en escamas para peces tropicales. Contiene vitaminas y minerales esenciales.',
-    descripcion_en: 'Balanced flake food for tropical fish. Contains essential vitamins and minerals.',
-    category_slug: 'alimentos', brand: 'Tetra', sku: 'FOOD-FLK-001',
-    precio_mxn: 85, precio_usd: 5, stock: 60, images: [], size_cm: '10x5x5',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
   {

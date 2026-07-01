@@ -17,12 +17,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white text-sm font-bold">
-                P
-              </div>
-              <span className="text-lg font-bold text-white font-[family-name:var(--font-heading)]">
-                AcuarioColima
-              </span>
+              <img src="/img/logos/logo.png" alt="AcuarioColima" className="h-8 w-auto" />
             </div>
             
             <div className="flex items-center gap-2 mt-4">

@@ -29,7 +29,7 @@ export interface ProductFilters {
 
 export function getProducts(filters?: ProductFilters): Product[] {
   const db = useDb()
-  let sql = 'SELECT p.*, c.nombre_es as category_name FROM new_products p'
+  let sql = 'SELECT p.*, c.nombre_es as category_name FROM new_products p '
   const params: any[] = []
   const joins: string[] = ['LEFT JOIN categories c ON c.id = p.category_id']
   const wheres: string[] = []

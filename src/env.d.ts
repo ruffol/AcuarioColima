@@ -13,5 +13,6 @@ declare namespace NodeJS {
     EMAIL_FROM: string
     NEXT_PUBLIC_BASE_URL: string
     NEXT_PUBLIC_WHATSAPP_NUMBER: string
+    NEXT_PUBLIC_FACEBOOK_PAGE_URL: string
   }
 }

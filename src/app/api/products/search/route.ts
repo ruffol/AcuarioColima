@@ -77,7 +77,7 @@ export async function GET(req: Request) {
     stock: p.stock,
     image: Array.isArray(p.images) ? p.images[0] || null : null,
     tipo: p.tipo,
-    category: null, // could add category name here
+    category: p.category_name || null,
     water_type: (p as any).water_type,
     difficulty: (p as any).difficulty,
   }))

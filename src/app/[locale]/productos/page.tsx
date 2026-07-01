@@ -68,7 +68,7 @@ export default async function ProductosPage({ params }: Props) {
     stock: p.stock,
     image: Array.isArray(p.images) ? p.images[0] || null : null,
     tipo: p.tipo,
-    category: null,
+    category: p.category_name || null,
   }))
 
   return (

@@ -1,8 +1,6 @@
 import { getTranslations } from 'next-intl/server'
-import { getCategories } from '@/lib/repositories/categories'
 import { getProducts } from '@/lib/repositories/products'
 import Hero from '@/components/layout/Hero'
-import CategoryCard from '@/components/product/CategoryCard'
 import ProductCard from '@/components/product/ProductCard'
 
 interface Props {
@@ -19,47 +17,12 @@ const benefits = [
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage' })
-  let categories: any[] = []
-  let featuredProducts: any[] = []
-  try {
-    categories = getCategories()
-    featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
-  } catch (e: any) {
-    console.error('[HomePage] Error fetching data:', e?.message, e?.stack)
-    throw e
-  }
+  const categories = getCategories()
+  const featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
 
   return (
     <>
       <Hero locale={locale} />
-
-      {/* Categories */}
-      <section className="bg-[#0E172A] py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <p className="text-sm font-semibold text-[#4FC3F7] uppercase tracking-widest mb-3">Categorías</p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 font-[family-name:var(--font-heading)] tracking-tight">
-              Explora nuestras categorías
-            </h2>
-            <p className="text-blue-200/50 max-w-lg mx-auto text-sm">
-              Encuentra peces, accesorios y todo lo necesario para tu acuario.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {categories.map((cat: any, i: number) => (
-              <div key={cat.id} style={{ animationDelay: `${i * 80}ms` }} className="animate-slide-up opacity-0 [animation-fill-mode:forwards]">
-                <CategoryCard
-                  slug={cat.slug}
-                  nombre={locale === 'es' ? cat.nombre_es : cat.nombre_en}
-                  imagenes={[]}
-                  icon={cat.icon}
-                  productCount={Math.floor(Math.random() * 50 + 10)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Why choose us */}
       <section className="bg-[#071221] py-20 sm:py-28">

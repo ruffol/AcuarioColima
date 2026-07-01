@@ -3,9 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import { seed } from './seed'
 
-const DB_PATH = process.env.NODE_ENV === 'production'
-  ? '/data/tlalchichi.db'
-  : path.join(process.cwd(), '.data', 'tlalchichi.db')
+const DB_PATH = path.join(process.cwd(), '.data', 'tlalchichi.db')
 
 export let _db: Database.Database | null = null
 

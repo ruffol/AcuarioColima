@@ -83,6 +83,7 @@
     "cp_requerido": "El código postal es obligatorio"
   },
   "Footer": {
+    "navegacion": "Navegación",
     "inicio": "Inicio",
     "productos": "Productos",
     "derechos": "Todos los derechos reservados",

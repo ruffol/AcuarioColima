@@ -35,6 +35,11 @@ export function getDb(): Database.Database {
   db.pragma('journal_mode = WAL')
   db.pragma('foreign_keys = ON')
 
+  // Set module-level _db so initTables() etc. can use _db!
+  // but DON'T write to globalThis yet — other chunks must not see
+  // a partially-initialized connection
+  _db = db
+
   try {
     initTables()
     migrateOrderItemsSchema()
@@ -42,6 +47,7 @@ export function getDb(): Database.Database {
     seed()
   } catch (e: any) {
     console.error('[DB] Initialization failed:', e?.message)
+    _db = null
     db.close()
     throw e
   }

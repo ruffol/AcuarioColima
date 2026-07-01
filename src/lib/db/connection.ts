@@ -14,13 +14,19 @@ export function getDb(): Database.Database {
       fs.mkdirSync(dir, { recursive: true })
     }
 
+    console.log('[DB] Creating database at', DB_PATH)
     _db = new Database(DB_PATH)
     _db.pragma('journal_mode = WAL')
     _db.pragma('foreign_keys = ON')
-    initTables()
-    migrateOrderItemsSchema()
-    migrateOldProducts()
-    seed()
+    try {
+      initTables()
+      migrateOrderItemsSchema()
+      migrateOldProducts()
+      seed()
+    } catch (e: any) {
+      console.error('[DB] Initialization failed:', e?.message, e?.stack)
+      throw e
+    }
   }
   return _db
 }

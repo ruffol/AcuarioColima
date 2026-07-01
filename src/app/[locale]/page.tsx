@@ -19,8 +19,15 @@ const benefits = [
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage' })
-  const categories = getCategories()
-  const featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
+  let categories: any[] = []
+  let featuredProducts: any[] = []
+  try {
+    categories = getCategories()
+    featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
+  } catch (e: any) {
+    console.error('[HomePage] Error fetching data:', e?.message, e?.stack)
+    throw e
+  }
 
   return (
     <>

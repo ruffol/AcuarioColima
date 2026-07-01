@@ -8,20 +8,33 @@ declare global {
       XFBML: {
         parse: (element?: HTMLElement | null, cb?: () => void) => void
       }
+      init?: (opts: { xfbml?: boolean; version?: string }) => void
     }
   }
 }
 
-const FB_SDK_URL = 'https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v22.0'
+const FB_SDK_URL = 'https://connect.facebook.net/es_ES/sdk.js'
 const SCRIPT_ID = 'facebook-jssdk'
-const MAX_RETRIES = 30
-const RETRY_INTERVAL = 300
+const MAX_RETRIES = 40
+const RETRY_INTERVAL = 250
 
 export default function FacebookFeed() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const cancelledRef = useRef(false)
   const url = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_URL || ''
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    const html = document.documentElement
+    setTheme(html.classList.contains('dark') ? 'dark' : 'light')
+
+    const observer = new MutationObserver(() => {
+      setTheme(html.classList.contains('dark') ? 'dark' : 'light')
+    })
+    observer.observe(html, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!url) return
@@ -29,32 +42,27 @@ export default function FacebookFeed() {
     cancelledRef.current = false
     let retryCount = 0
 
-    const ensureSDK = (): Promise<void> =>
+    const waitForFB = (): Promise<void> =>
       new Promise((resolve, reject) => {
-        if (typeof window.FB !== 'undefined' && window.FB.XFBML) {
-          resolve()
-          return
-        }
+        const check = setInterval(() => {
+          if (cancelledRef.current) {
+            clearInterval(check)
+            reject(new Error('cancelled'))
+            return
+          }
+          if (typeof window.FB !== 'undefined' && window.FB.XFBML) {
+            clearInterval(check)
+            resolve()
+          }
+          if (++retryCount > MAX_RETRIES) {
+            clearInterval(check)
+            reject(new Error('timeout'))
+          }
+        }, RETRY_INTERVAL)
+      })
 
-        if (document.getElementById(SCRIPT_ID)) {
-          const check = setInterval(() => {
-            if (cancelledRef.current) {
-              clearInterval(check)
-              reject(new Error('cancelled'))
-              return
-            }
-            if (typeof window.FB !== 'undefined' && window.FB.XFBML) {
-              clearInterval(check)
-              resolve()
-            }
-            if (++retryCount > MAX_RETRIES) {
-              clearInterval(check)
-              reject(new Error('timeout'))
-            }
-          }, RETRY_INTERVAL)
-          return
-        }
-
+    const loadSDK = (): Promise<void> =>
+      new Promise((resolve, reject) => {
         if (!document.getElementById('fb-root')) {
           const root = document.createElement('div')
           root.id = 'fb-root'
@@ -67,37 +75,27 @@ export default function FacebookFeed() {
         script.async = true
         script.defer = true
         script.crossOrigin = 'anonymous'
-        script.onload = () => {
-          const check = setInterval(() => {
-            if (cancelledRef.current) {
-              clearInterval(check)
-              reject(new Error('cancelled'))
-              return
-            }
-            if (typeof window.FB !== 'undefined' && window.FB.XFBML) {
-              clearInterval(check)
-              resolve()
-            }
-            if (++retryCount > MAX_RETRIES) {
-              clearInterval(check)
-              reject(new Error('timeout'))
-            }
-          }, RETRY_INTERVAL)
-        }
+        script.onload = () => resolve()
         script.onerror = () => reject(new Error('load-failed'))
         document.body.appendChild(script)
       })
 
     const init = async () => {
       try {
-        await ensureSDK()
+        if (typeof window.FB === 'undefined' || !window.FB.XFBML) {
+          await loadSDK()
+        }
+        await waitForFB()
         if (cancelledRef.current || !containerRef.current) return
 
         window.FB.XFBML.parse(containerRef.current, () => {
           if (!cancelledRef.current) setStatus('ready')
         })
-      } catch {
-        if (!cancelledRef.current) setStatus('error')
+      } catch (e) {
+        if (!cancelledRef.current) {
+          console.error('FacebookFeed:', e)
+          setStatus('error')
+        }
       }
     }
 
@@ -108,12 +106,18 @@ export default function FacebookFeed() {
     }
   }, [url])
 
+  useEffect(() => {
+    if (status !== 'ready' || !url || !containerRef.current) return
+    if (typeof window.FB === 'undefined' || !window.FB.XFBML) return
+    window.FB.XFBML.parse(containerRef.current)
+  }, [theme, status, url])
+
   if (!url) return null
 
   return (
     <section
       aria-label="Últimas publicaciones de Facebook"
-      className="relative min-h-[400px]"
+      className="relative"
     >
       <div
         ref={containerRef}
@@ -121,12 +125,12 @@ export default function FacebookFeed() {
         data-href={url}
         data-tabs="timeline"
         data-width=""
-        data-height="800"
+        data-height="900"
         data-small-header="false"
         data-adapt-container-width="true"
         data-hide-cover="false"
         data-show-facepile="false"
-        data-lazy="true"
+        data-theme={theme}
       >
         <blockquote cite={url} className="fb-xfbml-parse-ignore">
           <a
@@ -142,13 +146,13 @@ export default function FacebookFeed() {
 
       {status === 'loading' && (
         <div
-          className="absolute inset-0 bg-card rounded-2xl border border-border overflow-hidden"
+          className="bg-card rounded-2xl border border-border overflow-hidden"
           role="status"
           aria-label="Cargando publicaciones de Facebook"
         >
           <div className="animate-pulse p-6 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-surface-hover" />
+              <div className="w-12 h-12 rounded-full bg-surface-hover shrink-0" />
               <div className="space-y-2 flex-1">
                 <div className="h-3 w-1/3 rounded bg-surface-hover" />
                 <div className="h-2.5 w-1/5 rounded bg-surface-hover" />
@@ -189,16 +193,23 @@ export default function FacebookFeed() {
               />
             </svg>
           </div>
-          <p className="text-muted text-sm">
-            No se pudieron cargar las publicaciones de Facebook.
+          <p className="text-sm text-foreground font-medium mb-2">
+            No se pudieron cargar las publicaciones
           </p>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="mt-3 text-sm text-primary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+          <p className="text-xs text-muted mb-4">
+            Visita nuestra página de Facebook para ver las últimas publicaciones.
+          </p>
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
           >
-            Intentar de nuevo
-          </button>
+            Ir a Facebook
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
         </div>
       )}
     </section>

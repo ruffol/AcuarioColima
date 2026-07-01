@@ -39,7 +39,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <img src="/img/logos/logo.png" alt="AcuarioColima" className="h-10 w-auto" />
+            <img src="/img/logos/logo.png" alt="AcuarioColima" className="h-14 w-auto" />
           </Link>
 
           {/* Desktop nav */}

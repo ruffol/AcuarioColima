@@ -1,7 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { getProducts } from '@/lib/repositories/products'
 import Hero from '@/components/layout/Hero'
-import ProductCard from '@/components/product/ProductCard'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -17,7 +16,6 @@ const benefits = [
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage' })
-  const featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
   const heroProducts = getProducts({ activo: true, limit: 4 })
 
   return (
@@ -48,30 +46,6 @@ export default async function HomePage({ params }: Props) {
           </div>
         </div>
       </section>
-
-      {/* Featured products */}
-      {featuredProducts.length > 0 && (
-        <section className="bg-[#0E172A] py-20 sm:py-28">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <p className="text-sm font-semibold text-[#22D3EE] uppercase tracking-widest mb-3">Destacados</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 font-[family-name:var(--font-heading)] tracking-tight">
-                Productos destacados
-              </h2>
-              <p className="text-blue-200/50 max-w-lg mx-auto text-sm">
-                Los favoritos de nuestra comunidad de acuaristas.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
-              {featuredProducts.map((p: any, i: number) => (
-                <div key={p.id} style={{ animationDelay: `${i * 60}ms` }} className="animate-slide-up opacity-0 [animation-fill-mode:forwards]">
-                  <ProductCard model={p} locale={locale} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* About */}
       <section className="bg-[#071221] py-20 sm:py-28">

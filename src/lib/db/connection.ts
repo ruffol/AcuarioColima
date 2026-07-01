@@ -5,51 +5,84 @@ import { seed } from './seed'
 
 const DB_PATH = path.join(process.cwd(), '.data', 'tlalchichi.db')
 
-export let _db: Database.Database | null = null
-
-export function getDb(): Database.Database {
-  if (!_db) {
-    const dir = path.dirname(DB_PATH)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    console.log('[DB] Creating database at', DB_PATH)
-    _db = new Database(DB_PATH)
-    _db.pragma('journal_mode = WAL')
-    _db.pragma('foreign_keys = ON')
-    try {
-      initTables()
-      migrateOrderItemsSchema()
-      migrateOldProducts()
-      seed()
-    } catch (e: any) {
-      console.error('[DB] Initialization failed:', e?.message, e?.stack)
-      throw e
-    }
-  }
-  return _db
+declare global {
+  var __tlalchichi_db: Database.Database | undefined
+  var __tlalchichi_initializing: boolean | undefined
 }
 
-export function initDb(): Database.Database {
-  if (!_db) {
-    const dir = path.dirname(DB_PATH)
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
+export let _db: Database.Database | null = null
 
-    _db = new Database(DB_PATH)
-    _db.pragma('journal_mode = WAL')
-    _db.pragma('foreign_keys = ON')
+function getGlobalDb(): Database.Database | null {
+  return globalThis.__tlalchichi_db ?? _db
+}
+
+function setGlobalDb(db: Database.Database): void {
+  _db = db
+  globalThis.__tlalchichi_db = db
+}
+
+function initDbInternal(db: Database.Database): void {
+  if (globalThis.__tlalchichi_initializing) return
+  globalThis.__tlalchichi_initializing = true
+  try {
     initTables()
     migrateOrderItemsSchema()
     migrateOldProducts()
+    seed()
+  } finally {
+    globalThis.__tlalchichi_initializing = false
   }
-  return _db
 }
 
-export function initializeDatabase() {
-  getDb()
+export function getDb(): Database.Database {
+  const existing = getGlobalDb()
+  if (existing) return existing
+
+  const dir = path.dirname(DB_PATH)
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+
+  console.log('[DB] Creating database at', DB_PATH)
+  const db = new Database(DB_PATH)
+  db.pragma('journal_mode = WAL')
+  db.pragma('foreign_keys = ON')
+  setGlobalDb(db)
+
+  initDbInternal(db)
+
+  return db
+}
+
+export function initDb(): Database.Database {
+  const existing = getGlobalDb()
+  if (existing) return existing
+
+  const dir = path.dirname(DB_PATH)
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+
+  const db = new Database(DB_PATH)
+  db.pragma('journal_mode = WAL')
+  db.pragma('foreign_keys = ON')
+  initTables()
+  migrateOrderItemsSchema()
+  migrateOldProducts()
+  setGlobalDb(db)
+  return db
+}
+
+let _startupDone = false
+export function initializeDatabase(): Database.Database {
+  if (!_startupDone) {
+    _startupDone = true
+    console.log('[DB] Initializing database on startup...')
+    const db = getDb()
+    console.log('[DB] Database ready')
+    return db
+  }
+  return getDb()
 }
 
 function initTables() {

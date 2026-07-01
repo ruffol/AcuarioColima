@@ -87,7 +87,12 @@ export function getProducts(filters?: ProductFilters): Product[] {
   if (filters?.offset) sql += ' OFFSET ?'
   if (filters?.offset) params.push(filters.offset)
 
-  return (db.prepare(sql).all(...params) as any[]).map(rowToProduct)
+  try {
+    return (db.prepare(sql).all(...params) as any[]).map(rowToProduct)
+  } catch (e: any) {
+    console.error('[DB] SQL Error:', e?.message, 'SQL:', sql)
+    throw e
+  }
 }
 
 export function getProductBySlug(slug: string): Product | null {

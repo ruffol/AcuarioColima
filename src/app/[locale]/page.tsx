@@ -17,12 +17,12 @@ const benefits = [
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'HomePage' })
-  const categories = getCategories()
   const featuredProducts = getProducts({ destacado: true, activo: true, limit: 6 })
+  const heroProducts = getProducts({ activo: true, limit: 4 })
 
   return (
     <>
-      <Hero locale={locale} />
+      <Hero locale={locale} products={heroProducts} />
 
       {/* Why choose us */}
       <section className="bg-[#071221] py-20 sm:py-28">

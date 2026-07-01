@@ -1,20 +1,33 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link, useRouter } from '@/i18n/routing'
+import type { Product } from '@/types'
 
 interface Props {
   locale?: string
+  products?: Product[]
 }
 
 const trendingSearches = ['Betta', 'Guppy', 'Filtro', 'Pecera', 'Planta']
 
-export default function Hero({ locale = 'es' }: Props) {
+export default function Hero({ locale = 'es', products = [] }: Props) {
   const [searchQuery, setSearchQuery] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [current, setCurrent] = useState(0)
   const router = useRouter()
 
   useEffect(() => { setMounted(true) }, [])
+
+  const next = useCallback(() => {
+    if (products.length > 0) setCurrent((c) => (c + 1) % products.length)
+  }, [products.length])
+
+  useEffect(() => {
+    if (products.length < 2) return
+    const id = setInterval(next, 5000)
+    return () => clearInterval(id)
+  }, [products.length, next])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,6 +35,8 @@ export default function Hero({ locale = 'es' }: Props) {
       router.push(`/productos?busqueda=${encodeURIComponent(searchQuery.trim())}`)
     }
   }
+
+  const p = products[current]
 
   return (
     <section className="relative overflow-hidden bg-[#071221]" style={{ minHeight: 'clamp(600px, 90vh, 900px)' }}>
@@ -116,45 +131,57 @@ export default function Hero({ locale = 'es' }: Props) {
 
           </div>
 
-          {/* Right column — Visual */}
+          {/* Right column — Product carousel */}
           <div className={`hidden lg:flex justify-center items-center ${mounted ? 'animate-fade-in' : 'opacity-0'}`}>
             <div className="relative w-full max-w-md">
-              {/* Floating product card */}
               <div className="relative z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-[0_25px_60px_rgba(0,0,0,0.35)]">
-                {/* Product image area */}
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-[#0F4C81]/30 to-[#10B981]/20 flex items-center justify-center">
-                  <div className="text-center">
-                    <span className="text-6xl">🐠</span>
-                    <p className="text-white/40 text-xs mt-2">Acuario Plantado</p>
-                  </div>
+                {/* Product image */}
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-[#0F4C81]/30 to-[#10B981]/20">
+                  {p?.images?.[0] ? (
+                    <img
+                      src={p.images[0]}
+                      alt={locale === 'es' ? p.nombre_es : p.nombre_en}
+                      className="w-full h-full object-cover transition-opacity duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-6xl">🐠</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Product info */}
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <p className="text-xs text-blue-200/50 uppercase tracking-wider">Producto del mes</p>
-                    <p className="text-lg font-semibold text-white">Pez Japonés</p>
+                    <p className="text-lg font-semibold text-white">
+                      {p ? (locale === 'es' ? p.nombre_es : p.nombre_en) : 'Cargando...'}
+                    </p>
                   </div>
-                  <span className="text-lg font-bold text-[#4FC3F7]">$60</span>
+                  <span className="text-lg font-bold text-[#4FC3F7]">
+                    ${p ? p.precio_mxn.toLocaleString() : '—'}
+                  </span>
                 </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#f59e0b" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.71 1.452 1.44.977L10 15.09l4.092 2.542c.73.475 1.634-.164 1.44-.977l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clipRule="evenodd" />
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Badges */}
-                <div className="flex gap-2">
-                  <span className="text-[10px] px-2 py-1 rounded-full bg-[#10B981]/20 text-[#34D399] font-medium">☆☆☆☆☆ Envío gratis</span>
-                  <span className="text-[10px] px-2 py-1 rounded-full bg-[#4FC3F7]/20 text-[#4FC3F7] font-medium">Nuevo</span>
-                </div>
+                {/* Dots */}
+                {products.length > 1 && (
+                  <div className="flex justify-center gap-2 mt-4">
+                    {products.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrent(i)}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          i === current
+                            ? 'bg-[#4FC3F7] w-5'
+                            : 'bg-white/20 hover:bg-white/40'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Decorative glow behind card */}
+              {/* Decorative glow */}
               <div className="absolute -inset-4 bg-gradient-to-br from-[#4FC3F7]/20 via-transparent to-[#10B981]/20 rounded-[32px] blur-2xl -z-10" />
             </div>
           </div>

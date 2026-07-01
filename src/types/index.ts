@@ -1,5 +1,5 @@
 export type { Model, ModelFormData, ProductType, Color, ModelAvailability, CartItemVariant } from './model'
-export type { Product, ProductFormData } from './product'
+export type { Product, ProductFormData, ProductVariant } from './product'
 export type { Category, CategoryFormData } from './category'
 export type { FishSpecs, FishSpecsFormData, Difficulty, Feeding, WaterType } from './fish'
 export type { BlogPost, BlogPostFormData } from './blog'

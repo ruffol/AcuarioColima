@@ -1,3 +1,10 @@
+export interface ProductVariant {
+  name: string
+  sku: string
+  price: number
+  stock: number
+}
+
 export interface Product {
   id: number
   slug: string
@@ -22,6 +29,7 @@ export interface Product {
   tipo: 'accesorio' | 'pez'
   destacado: boolean
   activo: boolean
+  variants: ProductVariant[]
   created_at: string
 }
 
@@ -48,6 +56,7 @@ export interface ProductFormData {
   tipo: 'accesorio' | 'pez'
   destacado: boolean
   activo: boolean
+  variants: ProductVariant[]
 }
 
 // Legacy backward compat

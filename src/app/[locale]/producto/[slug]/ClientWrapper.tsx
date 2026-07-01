@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import AddToCartButton from './AddToCartButton'
-import type { CartItemVariant } from '@/types'
+import type { CartItemVariant, ProductVariant } from '@/types'
 
 interface ColorOption {
   nombre_es: string
@@ -19,24 +19,33 @@ interface Props {
 
 export default function ClientWrapper({ model, locale, source = 'model' }: Props) {
   if (source === 'product') {
+    const variants: ProductVariant[] = Array.isArray(model.variants) ? model.variants : []
+    const [selectedVariant, setSelectedVariant] = useState<number>(0)
+    const activeVariant = variants[selectedVariant]
+    const hasVariants = variants.length > 0
+
+    const currentPrice = hasVariants ? (activeVariant?.price ?? model.precio_mxn) : model.precio_mxn
+    const currentStock = hasVariants ? (activeVariant?.stock ?? model.stock) : model.stock
+    const currentSku = hasVariants ? (activeVariant?.sku ?? model.sku) : model.sku
+
     const variant: CartItemVariant = {
       modelId: String(model.id),
       modelSlug: model.slug,
       nombre_es: model.nombre_es,
       nombre_en: model.nombre_en,
-      typeId: String(model.category_id || ''),
-      typeSlug: model.tipo || '',
-      typeNombreEs: model.tipo === 'pez' ? 'Pez' : 'Accesorio',
-      typeNombreEn: model.tipo === 'pez' ? 'Fish' : 'Accessory',
+      typeId: hasVariants ? String(selectedVariant) : String(model.category_id || ''),
+      typeSlug: hasVariants ? (activeVariant?.name || '') : (model.tipo || ''),
+      typeNombreEs: hasVariants ? (activeVariant?.name || '') : (model.tipo === 'pez' ? 'Pez' : 'Accesorio'),
+      typeNombreEn: hasVariants ? (activeVariant?.name || '') : (model.tipo === 'pez' ? 'Fish' : 'Accessory'),
       colorId: '0',
       colorSlug: '',
       colorNombreEs: '',
       colorNombreEn: '',
       colorHex: '#ccc',
       image: Array.isArray(model.images) ? model.images[0] || '' : '',
-      precio_mxn: model.precio_mxn,
-      precio_usd: model.precio_usd,
-      stock: model.stock,
+      precio_mxn: currentPrice,
+      precio_usd: currentPrice > 0 ? currentPrice / 18 : 0,
+      stock: currentStock,
       weight_kg: model.weight_kg || 0,
     }
 
@@ -44,15 +53,52 @@ export default function ClientWrapper({ model, locale, source = 'model' }: Props
       <div className="space-y-6">
         <div>
           <p className="text-3xl font-semibold text-terracota">
-            {locale === 'es'
-              ? `$${model.precio_mxn} MXN`
-              : `$${model.precio_usd?.toFixed(2) || '0.00'} USD`}
+            ${currentPrice.toLocaleString('es-MX')} MXN
           </p>
+          {currentStock > 0 && (
+            <p className="text-sm text-muted mt-1">Stock: {currentStock}</p>
+          )}
         </div>
-        {model.stock > 0 ? (
+
+        {hasVariants && (
+          <div>
+            <p className="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
+              Tamaño
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {variants.map((v, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedVariant(i)}
+                  disabled={v.stock <= 0}
+                  className={`px-4 py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
+                    i === selectedVariant
+                      ? 'border-terracota bg-terracota/10 text-terracota'
+                      : v.stock <= 0
+                        ? 'border-arena bg-arena/30 text-muted/50 cursor-not-allowed line-through'
+                        : 'border-arena hover:border-terracota/50 text-foreground'
+                  }`}
+                >
+                  {v.name}
+                  <span className="block text-xs font-normal mt-0.5">
+                    ${v.price.toLocaleString('es-MX')} MXN
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {currentStock > 0 ? (
           <AddToCartButton variant={variant} />
         ) : (
-          <p className="text-amber-600 font-medium text-center py-4">Sin stock disponible</p>
+          <p className="text-amber-600 font-medium text-center py-4">
+            {hasVariants ? 'Selecciona un tamaño disponible' : 'Sin stock disponible'}
+          </p>
+        )}
+
+        {currentSku && (
+          <p className="text-xs text-muted">SKU: {currentSku}</p>
         )}
       </div>
     )

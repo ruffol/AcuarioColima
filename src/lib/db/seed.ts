@@ -22,7 +22,7 @@ const SEED_FISH = [
     descripcion_es: 'El pez Betta, también conocido como luchador de Siam, es uno de los peces más populares para acuarios pequeños. Conocido por sus colores vibrantes y aletas espectaculares.',
     descripcion_en: 'The Betta fish, also known as Siamese fighting fish, is one of the most popular fish for small aquariums. Known for its vibrant colors and spectacular fins.',
     category_slug: 'peces-tropicales', brand: 'N/A', sku: 'FISH-BET-001',
-    precio_mxn: 150, precio_usd: 8, stock: 25, images: [], size_cm: '5-7',
+    precio_mxn: 150, precio_usd: 8, stock: 25, images: ['/img/productos/betta.png'], size_cm: '5-7',
     tipo: 'pez', destacado: 1, activo: 1,
     fish_specs: { scientific_name: 'Betta splendens', temp_min: 24, temp_max: 28, ph_min: 6.5, ph_max: 7.5, adult_size_cm: 7, difficulty: 'beginner', lifespan_years: 3, feeding: 'carnivore', min_volume_liters: 20, water_type: 'fresh' },
     compatible_with: [],
@@ -42,7 +42,7 @@ const SEED_FISH = [
     descripcion_es: 'Pequeño pez de cardumen con una característica línea azul iridiscente. Muy popular en acuarios comunitarios.',
     descripcion_en: 'Small schooling fish with a characteristic iridescent blue line. Very popular in community aquariums.',
     category_slug: 'peces-tropicales', brand: 'N/A', sku: 'FISH-NEO-001',
-    precio_mxn: 25, precio_usd: 1.5, stock: 80, images: [], size_cm: '3-4',
+    precio_mxn: 25, precio_usd: 1.5, stock: 80, images: ['/img/productos/tetraneon.png'], size_cm: '3-4',
     tipo: 'pez', destacado: 0, activo: 1,
     fish_specs: { scientific_name: 'Paracheirodon innesi', temp_min: 23, temp_max: 27, ph_min: 5.5, ph_max: 7, adult_size_cm: 4, difficulty: 'beginner', lifespan_years: 5, feeding: 'omnivore', min_volume_liters: 60, water_type: 'fresh' },
     compatible_with: [],
@@ -52,7 +52,7 @@ const SEED_FISH = [
     descripcion_es: 'Bagre pequeño y pacífico que habita el fondo del acuario. Excelente para acuarios comunitarios.',
     descripcion_en: 'Small, peaceful catfish that inhabits the bottom of the aquarium. Excellent for community tanks.',
     category_slug: 'peces-tropicales', brand: 'N/A', sku: 'FISH-COR-001',
-    precio_mxn: 45, precio_usd: 2.5, stock: 40, images: [], size_cm: '3',
+    precio_mxn: 45, precio_usd: 2.5, stock: 40, images: ['/img/productos/corydora.png'], size_cm: '3',
     tipo: 'pez', destacado: 0, activo: 1,
     fish_specs: { scientific_name: 'Corydoras pygmaeus', temp_min: 22, temp_max: 26, ph_min: 6.5, ph_max: 7.5, adult_size_cm: 3, difficulty: 'beginner', lifespan_years: 4, feeding: 'omnivore', min_volume_liters: 40, water_type: 'fresh' },
     compatible_with: [],
@@ -101,12 +101,17 @@ const SEED_FISH = [
 
 const SEED_ACCESSORIES = [
   {
-    slug: 'pecera-20l', nombre_es: 'Pecera 20 Litros', nombre_en: '20 Liter Aquarium',
-    descripcion_es: 'Pecera de vidrio de 20 litros ideal para bettas o camaroness. Incluye tapa y luz LED básica.',
-    descripcion_en: '20 liter glass aquarium ideal for bettas or shrimp. Includes lid and basic LED light.',
+    slug: 'peceras', nombre_es: 'Peceras', nombre_en: 'Aquariums',
+    descripcion_es: 'Peceras de vidrio de alta calidad. Incluyen tapa y luz LED básica. Ideales para peces tropicales y de agua fría.',
+    descripcion_en: 'High quality glass aquariums. Includes lid and basic LED light. Ideal for tropical and cold water fish.',
     category_slug: 'peceras', brand: 'AcuaTech', sku: 'TNK-020-001',
-    precio_mxn: 450, precio_usd: 25, stock: 30, images: [], size_cm: '40x20x25',
+    precio_mxn: 450, precio_usd: 25, stock: 0, images: ['/img/productos/peceras.png'], size_cm: 'variable',
     tipo: 'accesorio', destacado: 1, activo: 1,
+    variants: [
+      { name: '20 Litros', sku: 'TNK-020-001', price: 450, stock: 30 },
+      { name: '40 Litros', sku: 'TNK-040-001', price: 650, stock: 20 },
+      { name: '60 Litros', sku: 'TNK-060-001', price: 850, stock: 15 },
+    ],
   },
   {
     slug: 'filtro-externo-500l', nombre_es: 'Filtro Externo 500 L/h', nombre_en: 'External Filter 500 L/h',
@@ -114,14 +119,13 @@ const SEED_ACCESSORIES = [
     descripcion_en: 'External filter with 500 liter per hour pump. Ideal for 60-100 liter aquariums. Includes filter media.',
     category_slug: 'filtros', brand: 'AquaClear', sku: 'FIL-EXT-500',
     precio_mxn: 890, precio_usd: 49, stock: 15, images: [], size_cm: '25x15x20',
-    tipo: 'accesorio', destacado: 1, activo: 1,
   },
   {
-    slug: 'calentador-100w', nombre_es: 'Calentador 100W', nombre_en: 'Heater 100W',
-    descripcion_es: 'Calentador sumergible de 100W con control automático de temperatura. Adecuado para acuarios de 40-80 litros.',
-    descripcion_en: '100W submersible heater with automatic temperature control. Suitable for 40-80 liter aquariums.',
-    category_slug: 'peces-tropicales', brand: 'Eheim', sku: 'HTR-100-001',
-    precio_mxn: 350, precio_usd: 19, stock: 25, images: [], size_cm: '25x3x3',
+    slug: 'filtro-interno-650lh', nombre_es: 'Filtro Interno 650 L/h', nombre_en: 'Internal Filter 650 L/h',
+    descripcion_es: 'Filtro interno sumergible con bomba de 650 litros por hora. Incluye medios filtrantes y ventosas para fijación.',
+    descripcion_en: 'Submersible internal filter with 650 liter per hour pump. Includes filter media and suction cups.',
+    category_slug: 'filtros', brand: 'Marina', sku: 'FIL-INT-650',
+    precio_mxn: 350, precio_usd: 19, stock: 20, images: ['/img/productos/filtro interno de 650LH.png'], size_cm: '20x10x15',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
   {
@@ -137,7 +141,7 @@ const SEED_ACCESSORIES = [
     descripcion_es: 'Arena fina natural para acuarios. Ideal para peces de fondo y plantas acuáticas. 5 kilogramos.',
     descripcion_en: 'Natural fine sand for aquariums. Ideal for bottom fish and aquatic plants. 5 kilograms.',
     category_slug: 'sustratos', brand: 'NatureSoil', sku: 'SUB-SND-005',
-    precio_mxn: 180, precio_usd: 10, stock: 40, images: [], size_cm: '30x20x5',
+    precio_mxn: 180, precio_usd: 10, stock: 40, images: ['/img/productos/sustrato arena de silice.png'], size_cm: '30x20x5',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
   {
@@ -145,7 +149,7 @@ const SEED_ACCESSORIES = [
     descripcion_es: 'Bomba de aire silenciosa para acuarios de hasta 60 litros. Incluye tubo y difusor de burbuja fina.',
     descripcion_en: 'Silent air pump for aquariums up to 60 liters. Includes tube and fine bubble diffuser.',
     category_slug: 'bombas-aire', brand: 'Marina', sku: 'AIR-PMP-001',
-    precio_mxn: 220, precio_usd: 12, stock: 35, images: [], size_cm: '10x6x8',
+    precio_mxn: 220, precio_usd: 12, stock: 35, images: ['/img/productos/bomba de aire chica.png'], size_cm: '10x6x8',
     tipo: 'accesorio', destacado: 0, activo: 1,
   },
 ]
@@ -216,8 +220,8 @@ function seedNewProducts() {
   if (existing.count > 0) return
 
   const insertProduct = db.prepare(`
-    INSERT INTO new_products (slug, nombre_es, nombre_en, descripcion_es, descripcion_en, category_id, brand, sku, precio_mxn, precio_usd, stock, images, size_cm, tipo, destacado, activo)
-    VALUES (@slug, @nombre_es, @nombre_en, @descripcion_es, @descripcion_en, @category_id, @brand, @sku, @precio_mxn, @precio_usd, @stock, @imagenes, @size_cm, @tipo, @destacado, @activo)
+    INSERT INTO new_products (slug, nombre_es, nombre_en, descripcion_es, descripcion_en, category_id, brand, sku, precio_mxn, precio_usd, stock, images, size_cm, variants, tipo, destacado, activo)
+    VALUES (@slug, @nombre_es, @nombre_en, @descripcion_es, @descripcion_en, @category_id, @brand, @sku, @precio_mxn, @precio_usd, @stock, @imagenes, @size_cm, @variants, @tipo, @destacado, @activo)
   `)
   const insertFish = db.prepare(`
     INSERT INTO fish_specs (product_id, scientific_name, temp_min, temp_max, ph_min, ph_max, adult_size_cm, difficulty, lifespan_years, feeding, min_volume_liters, water_type)
@@ -239,6 +243,7 @@ function seedNewProducts() {
       stock: p.stock, imagenes: JSON.stringify(p.images),
       size_cm: p.size_cm, tipo: p.tipo,
       destacado: p.destacado, activo: p.activo,
+      variants: '[]',
     })
     insertFish.run({
       product_id: result.lastInsertRowid,
@@ -256,6 +261,7 @@ function seedNewProducts() {
       stock: p.stock, imagenes: JSON.stringify(p.images),
       size_cm: p.size_cm, tipo: p.tipo,
       destacado: p.destacado, activo: p.activo,
+      variants: JSON.stringify(p.variants || []),
     })
     count++
   }

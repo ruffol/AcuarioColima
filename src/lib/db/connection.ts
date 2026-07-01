@@ -175,6 +175,7 @@ function initTables() {
       images TEXT DEFAULT '[]',
       size_cm TEXT DEFAULT '',
       compatibility_ids TEXT DEFAULT '[]',
+      variants TEXT DEFAULT '[]',
       tipo TEXT NOT NULL DEFAULT 'accesorio' CHECK(tipo IN ('accesorio', 'pez')),
       destacado INTEGER DEFAULT 0,
       activo INTEGER DEFAULT 1,

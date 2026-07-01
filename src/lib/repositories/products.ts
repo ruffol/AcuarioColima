@@ -1,4 +1,4 @@
-import type { Product, ProductFormData } from '@/types'
+import type { Product, ProductFormData, ProductVariant } from '@/types'
 import { useDb, parseJson, boolToInt, intToBool } from './base'
 
 function rowToProduct(row: any): Product {
@@ -6,6 +6,7 @@ function rowToProduct(row: any): Product {
     ...row,
     images: parseJson<string[]>(row.images, []),
     compatibility_ids: parseJson<number[]>(row.compatibility_ids, []),
+    variants: parseJson<ProductVariant[]>(row.variants, []),
     destacado: intToBool(row.destacado),
     activo: intToBool(row.activo),
   }
@@ -108,6 +109,7 @@ export function upsertProduct(data: ProductFormData & { id?: number }): Product 
     ...data,
     images: JSON.stringify(data.images || []),
     compatibility_ids: JSON.stringify(data.compatibility_ids || []),
+    variants: JSON.stringify(data.variants || []),
     destacado: boolToInt(data.destacado),
     activo: boolToInt(data.activo),
     category_id: data.category_id || null,
@@ -120,7 +122,7 @@ export function upsertProduct(data: ProductFormData & { id?: number }): Product 
         weight_kg=@weight_kg, supplier=@supplier, cost_price=@cost_price, margin=@margin,
         precio_mxn=@precio_mxn, precio_usd=@precio_usd, stock=@stock,
         images=@images, size_cm=@size_cm, compatibility_ids=@compatibility_ids,
-        tipo=@tipo, destacado=@destacado, activo=@activo
+        variants=@variants, tipo=@tipo, destacado=@destacado, activo=@activo
       WHERE id = @id
     `).run(row)
     return getProductById(data.id)!
@@ -128,10 +130,10 @@ export function upsertProduct(data: ProductFormData & { id?: number }): Product 
   const result = db.prepare(`
     INSERT INTO new_products (slug, nombre_es, nombre_en, descripcion_es, descripcion_en,
       category_id, brand, sku, barcode, weight_kg, supplier, cost_price, margin,
-      precio_mxn, precio_usd, stock, images, size_cm, compatibility_ids, tipo, destacado, activo)
+      precio_mxn, precio_usd, stock, images, size_cm, compatibility_ids, variants, tipo, destacado, activo)
     VALUES (@slug, @nombre_es, @nombre_en, @descripcion_es, @descripcion_en,
       @category_id, @brand, @sku, @barcode, @weight_kg, @supplier, @cost_price, @margin,
-      @precio_mxn, @precio_usd, @stock, @images, @size_cm, @compatibility_ids, @tipo, @destacado, @activo)
+      @precio_mxn, @precio_usd, @stock, @images, @size_cm, @compatibility_ids, @variants, @tipo, @destacado, @activo)
   `).run(row)
   return getProductById(Number(result.lastInsertRowid))!
 }

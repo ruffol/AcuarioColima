@@ -182,10 +182,10 @@ export function createOrder(input: CreateOrderInput): OrderWithItems {
     const insertItem = db.prepare(`
       INSERT INTO order_items (
         order_id, productId, productSlug, productName, variantName,
-        unitPrice, image, sku, quantity, subtotal
+        unitPrice, precio_unitario, image, sku, quantity, subtotal
       ) VALUES (
         @orderId, @productId, @productSlug, @productName, @variantName,
-        @unitPrice, @image, @sku, @quantity, @subtotal
+        @unitPrice, @unitPrice, @image, @sku, @quantity, @subtotal
       )
     `)
 

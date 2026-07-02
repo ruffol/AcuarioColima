@@ -379,35 +379,51 @@ function migrateOrderItemsSchema() {
 
   // ── WhatsApp order columns ──
   const ordersCols = db.prepare("PRAGMA table_info('orders')").all() as any[]
-  const hasOrderNumber = ordersCols.some((c: any) => c.name === 'orderNumber')
-  if (!hasOrderNumber) {
-    db.exec("ALTER TABLE orders ADD COLUMN orderNumber TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN phone TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN city TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN state TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN postalCode TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN deliveryMethod TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN paymentMethod TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN notes TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN shipping INTEGER")
-    db.exec("ALTER TABLE orders ADD COLUMN status TEXT DEFAULT 'NUEVO'")
-    db.exec("ALTER TABLE orders ADD COLUMN whatsappMessage TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN communicationStatus TEXT DEFAULT 'PENDING'")
-    db.exec("ALTER TABLE orders ADD COLUMN shippingMethod TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN shippingCarrier TEXT")
-    db.exec("ALTER TABLE orders ADD COLUMN updatedAt TEXT")
+  const hasCustomerName = ordersCols.some((c: any) => c.name === 'customerName')
+  if (!hasCustomerName) {
+    const cols = [
+      { name: 'orderNumber', type: 'TEXT' },
+      { name: 'customerName', type: 'TEXT' },
+      { name: 'phone', type: 'TEXT' },
+      { name: 'address', type: 'TEXT' },
+      { name: 'city', type: 'TEXT' },
+      { name: 'state', type: 'TEXT' },
+      { name: 'postalCode', type: 'TEXT' },
+      { name: 'deliveryMethod', type: 'TEXT' },
+      { name: 'paymentMethod', type: 'TEXT' },
+      { name: 'notes', type: 'TEXT' },
+      { name: 'shipping', type: 'INTEGER' },
+      { name: 'status', type: 'TEXT DEFAULT \'NUEVO\'' },
+      { name: 'whatsappMessage', type: 'TEXT' },
+      { name: 'communicationStatus', type: 'TEXT DEFAULT \'PENDING\'' },
+      { name: 'shippingMethod', type: 'TEXT' },
+      { name: 'shippingCarrier', type: 'TEXT' },
+      { name: 'createdAt', type: 'TEXT' },
+      { name: 'updatedAt', type: 'TEXT' },
+    ]
+    for (const c of cols) {
+      try { db.exec(`ALTER TABLE orders ADD COLUMN ${c.name} ${c.type}`) }
+      catch (e: any) { console.warn('[db] Migrate orders.' + c.name + ':', e?.message) }
+    }
   }
 
   const itemsCols = db.prepare("PRAGMA table_info('order_items')").all() as any[]
-  const hasProductId = itemsCols.some((c: any) => c.name === 'productId')
-  if (!hasProductId) {
-    db.exec("ALTER TABLE order_items ADD COLUMN productId INTEGER")
-    db.exec("ALTER TABLE order_items ADD COLUMN productSlug TEXT")
-    db.exec("ALTER TABLE order_items ADD COLUMN productName TEXT")
-    db.exec("ALTER TABLE order_items ADD COLUMN variantName TEXT")
-    db.exec("ALTER TABLE order_items ADD COLUMN image TEXT")
-    db.exec("ALTER TABLE order_items ADD COLUMN sku TEXT")
-    db.exec("ALTER TABLE order_items ADD COLUMN subtotal INTEGER")
+  const hasUnitPrice = itemsCols.some((c: any) => c.name === 'unitPrice')
+  if (!hasUnitPrice) {
+    const cols = [
+      { name: 'productId', type: 'INTEGER' },
+      { name: 'productSlug', type: 'TEXT' },
+      { name: 'productName', type: 'TEXT' },
+      { name: 'variantName', type: 'TEXT' },
+      { name: 'unitPrice', type: 'INTEGER' },
+      { name: 'image', type: 'TEXT' },
+      { name: 'sku', type: 'TEXT' },
+      { name: 'subtotal', type: 'INTEGER' },
+    ]
+    for (const c of cols) {
+      try { db.exec(`ALTER TABLE order_items ADD COLUMN ${c.name} ${c.type}`) }
+      catch (e: any) { console.warn('[db] Migrate order_items.' + c.name + ':', e?.message) }
+    }
   }
 
   // ── New tables for WhatsApp flow ──

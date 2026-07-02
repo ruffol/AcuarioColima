@@ -110,14 +110,15 @@ export function createOrder(input: CreateOrderInput): OrderWithItems {
       ? Math.round(product.precio_mxn)
       : Math.round(item.unitPrice)
 
-    const subtotal = unitPrice * qty
+    // Store all amounts in centavos to match legacy schema
+    const subtotal = unitPrice * qty * 100
 
     items.push({
       productId: item.productId,
       productSlug: product?.slug || '',
       productName: item.productName || product?.nombre_es || 'Producto',
       variantName: item.variantName || null,
-      unitPrice,
+      unitPrice: unitPrice * 100,
       image: item.image
         || (Array.isArray(product?.images) ? product.images[0] : null)
         || null,
@@ -132,7 +133,7 @@ export function createOrder(input: CreateOrderInput): OrderWithItems {
   }
 
   const subtotal = items.reduce((s, i) => s + i.subtotal, 0)
-  const shipping = calcShipping(input.deliveryMethod)
+  const shipping = calcShipping(input.deliveryMethod) * 100
   const total = subtotal + shipping
 
   const now = new Date().toISOString()
@@ -140,18 +141,20 @@ export function createOrder(input: CreateOrderInput): OrderWithItems {
   const order = db.transaction(() => {
     const result = db.prepare(`
       INSERT INTO orders (
-        orderNumber, customerName, phone, email,
+        orderNumber, customerName, phone, email, pais, moneda,
         address, city, state, postalCode,
         deliveryMethod, paymentMethod, notes,
-        subtotal, shipping, total,
+        subtotal, costo_envio, total,
+        payment_provider, payment_status,
         status, communicationStatus,
         shippingMethod, shippingCarrier,
         createdAt, updatedAt
       ) VALUES (
-        @orderNumber, @customerName, @phone, @email,
+        @orderNumber, @customerName, @phone, @email, 'MEXICO', 'MXN',
         @address, @city, @state, @postalCode,
         @deliveryMethod, @paymentMethod, @notes,
         @subtotal, @shipping, @total,
+        'whatsapp', 'pending',
         'NUEVO', 'PENDING',
         @deliveryMethod, NULL,
         @createdAt, @createdAt

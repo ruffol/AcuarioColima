@@ -131,7 +131,7 @@ export default function AdminOrdenesPage() {
                       {status}
                     </span>
                     <p className="text-sm font-medium mt-1 text-foreground">
-                      ${order.total || (order.total / 100).toFixed(2)} MXN
+                      ${(order.total / 100).toFixed(2)} MXN
                     </p>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function AdminOrdenesPage() {
                             {item.variantName ? ` (${item.variantName})` : ''}
                           </span>
                           <span className="text-muted shrink-0 ml-4">
-                            {item.quantity || 1} &times; ${(item.unitPrice || item.precio_unitario / 100 || item.precio_mxn).toFixed(2)}
+                            {item.quantity || 1} &times; ${((item.unitPrice ?? item.precio_unitario) / 100).toFixed(2)}
                           </span>
                         </div>
                       ))}

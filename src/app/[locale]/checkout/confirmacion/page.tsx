@@ -138,15 +138,15 @@ export default function ConfirmacionPage({
           </div>
           <div className="flex justify-between">
             <span className="text-muted">Subtotal</span>
-            <span className="text-foreground">${order.subtotal} MXN</span>
+            <span className="text-foreground">${(order.subtotal / 100).toLocaleString()} MXN</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted">Envío</span>
-            <span className="text-foreground">${order.shipping} MXN</span>
+            <span className="text-foreground">${(order.shipping / 100).toLocaleString()} MXN</span>
           </div>
           <div className="flex justify-between font-semibold pt-2 border-t border-border">
             <span className="text-foreground">Total</span>
-            <span className="text-primary">${order.total} MXN</span>
+            <span className="text-primary">${(order.total / 100).toLocaleString()} MXN</span>
           </div>
         </div>
       </div>

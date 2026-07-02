@@ -60,12 +60,12 @@ export function buildWhatsAppMessage(order: {
   for (const item of order.items) {
     msg += `\n• ${item.productName}${item.variantName ? ` (${item.variantName})` : ''}`
     msg += `\n  Cantidad: ${item.quantity}`
-    msg += `\n  Precio: $${item.unitPrice.toLocaleString()}`
+    msg += `\n  Precio: $${(item.unitPrice / 100).toLocaleString()}`
   }
 
-  msg += `\n\n*Subtotal:*\n$${order.subtotal.toLocaleString()}`
-  msg += `\n\n*Envío:*\n$${order.shipping.toLocaleString()}`
-  msg += `\n\n*Total:*\n$${order.total.toLocaleString()}`
+  msg += `\n\n*Subtotal:*\n$${(order.subtotal / 100).toLocaleString()}`
+  msg += `\n\n*Envío:*\n$${(order.shipping / 100).toLocaleString()}`
+  msg += `\n\n*Total:*\n$${(order.total / 100).toLocaleString()}`
   msg += `\n\n*Método de pago:*\n${paymentLabels[order.paymentMethod] || order.paymentMethod}`
 
   if (order.notes?.trim()) {

@@ -164,7 +164,7 @@ export default function CartDrawer() {
                     onClick={closeCart}
                     className="block w-full text-center bg-primary text-white py-3 rounded-2xl font-medium hover:bg-primary-dark transition-all active:scale-[0.98] shadow-md shadow-primary/20"
                   >
-                    {t('pagar')}
+                    Continuar
                   </Link>
                 </div>
               </>

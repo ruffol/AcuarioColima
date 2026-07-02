@@ -376,6 +376,57 @@ function migrateOrderItemsSchema() {
   if (!hasColorId) {
     db.exec('ALTER TABLE order_items ADD COLUMN color_id INTEGER')
   }
+
+  // ── WhatsApp order columns ──
+  const ordersCols = db.prepare("PRAGMA table_info('orders')").all() as any[]
+  const hasOrderNumber = ordersCols.some((c: any) => c.name === 'orderNumber')
+  if (!hasOrderNumber) {
+    db.exec("ALTER TABLE orders ADD COLUMN orderNumber TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN phone TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN city TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN state TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN postalCode TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN deliveryMethod TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN paymentMethod TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN notes TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN shipping INTEGER")
+    db.exec("ALTER TABLE orders ADD COLUMN status TEXT DEFAULT 'NUEVO'")
+    db.exec("ALTER TABLE orders ADD COLUMN whatsappMessage TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN communicationStatus TEXT DEFAULT 'PENDING'")
+    db.exec("ALTER TABLE orders ADD COLUMN shippingMethod TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN shippingCarrier TEXT")
+    db.exec("ALTER TABLE orders ADD COLUMN updatedAt TEXT")
+  }
+
+  const itemsCols = db.prepare("PRAGMA table_info('order_items')").all() as any[]
+  const hasProductId = itemsCols.some((c: any) => c.name === 'productId')
+  if (!hasProductId) {
+    db.exec("ALTER TABLE order_items ADD COLUMN productId INTEGER")
+    db.exec("ALTER TABLE order_items ADD COLUMN productSlug TEXT")
+    db.exec("ALTER TABLE order_items ADD COLUMN productName TEXT")
+    db.exec("ALTER TABLE order_items ADD COLUMN variantName TEXT")
+    db.exec("ALTER TABLE order_items ADD COLUMN image TEXT")
+    db.exec("ALTER TABLE order_items ADD COLUMN sku TEXT")
+    db.exec("ALTER TABLE order_items ADD COLUMN subtotal INTEGER")
+  }
+
+  // ── New tables for WhatsApp flow ──
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS order_sequences (
+      date TEXT PRIMARY KEY,
+      lastNumber INTEGER NOT NULL DEFAULT 0
+    )
+  `)
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS order_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      orderId INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+      status TEXT NOT NULL,
+      date TEXT NOT NULL DEFAULT (datetime('now')),
+      user TEXT
+    )
+  `)
 }
 
 function migrateOldProducts() {

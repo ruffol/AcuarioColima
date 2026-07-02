@@ -14,5 +14,9 @@ declare namespace NodeJS {
     NEXT_PUBLIC_BASE_URL: string
     NEXT_PUBLIC_WHATSAPP_NUMBER: string
     NEXT_PUBLIC_FACEBOOK_PAGE_URL: string
+    STORE_NAME: string
+    STORE_PHONE: string
+    STORE_EMAIL: string
+    STORE_ADDRESS: string
   }
 }
